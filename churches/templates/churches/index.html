@@ -1,0 +1,1987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Church Map</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    
+    <!-- Custom CSS -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f5f5;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1000;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin: 0.25rem 0 0 0;
+        }
+
+        .main-container {
+            display: flex;
+            height: calc(100vh - 80px);
+            position: relative;
+        }
+
+        .search-panel {
+            width: 350px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 999;
+        }
+
+        .search-container {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-button {
+            width: 100%;
+            margin-top: 0.75rem;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .search-button:hover {
+            transform: translateY(-1px);
+        }
+
+        .search-button:active {
+            transform: translateY(0);
+        }
+
+        .results-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .stats-container {
+            background: #f8f9fa;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stats-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .stats-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .stats-label {
+            color: #666;
+        }
+
+        .stats-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .map-container {
+            flex: 1;
+            position: relative;
+        }
+
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            flex-direction: column;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 1rem;
+            margin: 1rem;
+            border-radius: 8px;
+            border: 1px solid #fcc;
+            display: none;
+        }
+
+        .success-message {
+            background: #efe;
+            color: #363;
+            padding: 1rem;
+            margin: 1rem;
+            border-radius: 8px;
+            border: 1px solid #cfc;
+            display: none;
+        }
+
+        /* Mobile Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                padding: 0.75rem 1rem;
+            }
+            
+            .header h1 {
+                font-size: 1.25rem;
+            }
+            
+            .main-container {
+                flex-direction: column;
+                height: calc(100vh - 60px);
+            }
+            
+            .search-panel {
+                width: 100%;
+                height: 200px;
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            
+            .search-container {
+                padding: 1rem;
+            }
+            
+            .results-container {
+                display: none; /* Hide on mobile to save space */
+            }
+            
+            .stats-container {
+                padding: 0.75rem 1rem;
+            }
+            
+            .map-container {
+                flex: 1;
+                min-height: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 0.5rem 0.75rem;
+            }
+            
+            .header h1 {
+                font-size: 1.1rem;
+            }
+            
+            .header p {
+                font-size: 0.8rem;
+            }
+            
+            .search-panel {
+                height: 150px;
+            }
+            
+            .search-container {
+                padding: 0.75rem;
+            }
+            
+            .search-input {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.9rem;
+            }
+            
+            .search-button {
+                padding: 0.6rem;
+                font-size: 0.9rem;
+                margin-top: 0.5rem;
+            }
+        }
+
+        /* Custom Leaflet Controls */
+        .leaflet-control-container .leaflet-top.leaflet-right {
+            top: 20px;
+            right: 20px;
+        }
+
+        .leaflet-control-zoom {
+            border: none !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+        }
+
+        .leaflet-control-zoom a {
+            background: white !important;
+            color: #333 !important;
+            border: none !important;
+            font-size: 18px !important;
+            line-height: 26px !important;
+            width: 30px !important;
+            height: 30px !important;
+        }
+
+        .leaflet-control-zoom a:hover {
+            background: #f5f5f5 !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <h1>Interactive Church Map</h1>
+        <p>Find churches near you and get directions</p>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Search Panel -->
+        <div class="search-panel">
+            <!-- Search Container -->
+            <div class="search-container">
+                <input type="text" 
+                       id="searchInput" 
+                       class="search-input" 
+                       placeholder="Search for a location or address..."
+                       autocomplete="off">
+                <button id="searchButton" class="search-button">
+                    Search Churches
+                </button>
+            </div>
+
+            <!-- Stats Container -->
+            <div class="stats-container">
+                <div class="stats-item">
+                    <span class="stats-label">Total Churches:</span>
+                    <span class="stats-value" id="totalChurches">Loading...</span>
+                </div>
+                <div class="stats-item">
+                    <span class="stats-label">With Coordinates:</span>
+                    <span class="stats-value" id="churchesWithCoords">Loading...</span>
+                </div>
+                <div class="stats-item">
+                    <span class="stats-label">Geocoding Rate:</span>
+                    <span class="stats-value" id="geocodingRate">Loading...</span>
+                </div>
+            </div>
+
+            <!-- Results Container -->
+            <div class="results-container" id="resultsContainer">
+                <p style="color: #666; text-align: center; margin-top: 2rem;">
+                    Search for a location to see nearby churches
+                </p>
+            </div>
+        </div>
+
+        <!-- Map Container -->
+        <div class="map-container">
+            <div id="map"></div>
+            
+            <!-- Loading Overlay -->
+            <div class="loading-overlay" id="loadingOverlay">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">Loading map and church data...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error/Success Messages -->
+    <div class="error-message" id="errorMessage"></div>
+    <div class="success-message" id="successMessage"></div>
+
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        // Global variables
+        let map;
+        let churchMarkers = [];
+        let churchData = [];
+        let currentLocation = null;
+        let markersLayer;
+        let churchIcon;
+        let manualLocation = null;
+
+        // API endpoints
+        const API_BASE = '/api';
+        const ENDPOINTS = {
+            churches: `${API_BASE}/churches/`,
+            churchesMap: `${API_BASE}/churches/map/`,
+            churchesSearch: `${API_BASE}/churches/search/`,
+            churchesStats: `${API_BASE}/churches/stats/`,
+            geocoding: `${API_BASE}/geocoding/`,
+            directions: `${API_BASE}/directions/`,
+            reverseGeocoding: `${API_BASE}/reverse-geocoding/`
+        };
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMap();
+            loadChurchStats();
+            loadChurchData();
+            setupEventListeners();
+        });
+
+        // Initialize the Leaflet map
+        function initializeMap() {
+            // Create map centered on the United States
+            map = L.map('map', {
+                center: [39.8283, -98.5795],
+                zoom: 4,
+                zoomControl: true,
+                scrollWheelZoom: true,
+                doubleClickZoom: true,
+                boxZoom: true,
+                keyboard: true,
+                dragging: true,
+                touchZoom: true
+            });
+
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19,
+                minZoom: 3
+            }).addTo(map);
+
+            // Create custom church icon
+            createChurchIcon();
+
+            // Create markers layer group
+            markersLayer = L.layerGroup().addTo(map);
+
+            // Add scale control
+            L.control.scale({
+                position: 'bottomleft',
+                metric: true,
+                imperial: true
+            }).addTo(map);
+
+            // Add custom controls
+            addCustomControls();
+
+            console.log('Map initialized successfully');
+        }
+
+        // Create custom church icon
+        function createChurchIcon() {
+            churchIcon = L.divIcon({
+                html: `
+                    <div style="
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        width: 24px;
+                        height: 24px;
+                        border-radius: 50%;
+                        border: 3px solid white;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: white;
+                        font-size: 12px;
+                        font-weight: bold;
+                    ">⛪</div>
+                `,
+                className: 'custom-church-icon',
+                iconSize: [30, 30],
+                iconAnchor: [15, 15],
+                popupAnchor: [0, -15]
+            });
+        }
+
+        // Add custom map controls
+        function addCustomControls() {
+            // Fit bounds control
+            const fitBoundsControl = L.control({ position: 'topright' });
+            fitBoundsControl.onAdd = function(map) {
+                const div = L.DomUtil.create('div', 'leaflet-control-custom');
+                div.innerHTML = `
+                    <button style="
+                        background: white;
+                        border: none;
+                        padding: 8px;
+                        border-radius: 4px;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                        cursor: pointer;
+                        font-size: 14px;
+                        margin-bottom: 5px;
+                        width: 30px;
+                        height: 30px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    " title="Fit all churches">🎯</button>
+                `;
+                
+                div.onclick = function(e) {
+                    e.stopPropagation();
+                    fitMapToChurches();
+                };
+                
+                return div;
+            };
+            fitBoundsControl.addTo(map);
+
+            // Location control
+            const locationControl = L.control({ position: 'topright' });
+            locationControl.onAdd = function(map) {
+                const div = L.DomUtil.create('div', 'leaflet-control-custom');
+                div.innerHTML = `
+                    <button style="
+                        background: white;
+                        border: none;
+                        padding: 8px;
+                        border-radius: 4px;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                        cursor: pointer;
+                        font-size: 14px;
+                        width: 30px;
+                        height: 30px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin-bottom: 5px;
+                    " title="Find my location">📍</button>
+                `;
+                
+                div.onclick = function(e) {
+                    e.stopPropagation();
+                    findUserLocation();
+                };
+                
+                return div;
+            };
+            locationControl.addTo(map);
+
+            // Manual location control
+            const manualLocationControl = L.control({ position: 'topright' });
+            manualLocationControl.onAdd = function(map) {
+                const div = L.DomUtil.create('div', 'leaflet-control-custom');
+                div.innerHTML = `
+                    <button style="
+                        background: white;
+                        border: none;
+                        padding: 8px;
+                        border-radius: 4px;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                        cursor: pointer;
+                        font-size: 14px;
+                        width: 30px;
+                        height: 30px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    " title="Set my location manually">🏠</button>
+                `;
+                
+                div.onclick = function(e) {
+                    e.stopPropagation();
+                    setManualLocation();
+                };
+                
+                return div;
+            };
+            manualLocationControl.addTo(map);
+        }
+
+        // Load church statistics
+        async function loadChurchStats() {
+            try {
+                const response = await fetch(ENDPOINTS.churchesStats);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const stats = await response.json();
+                
+                // Update stats display
+                document.getElementById('totalChurches').textContent = stats.total_churches || 0;
+                document.getElementById('churchesWithCoords').textContent = stats.churches_with_coordinates || 0;
+                document.getElementById('geocodingRate').textContent = `${stats.geocoding_percentage || 0}%`;
+                
+                console.log('Church statistics loaded:', stats);
+            } catch (error) {
+                console.error('Error loading church statistics:', error);
+                showError('Failed to load church statistics');
+            }
+        }
+
+        // Load church data for map display
+        async function loadChurchData() {
+            try {
+                const response = await fetch(ENDPOINTS.churchesMap);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                churchData = await response.json();
+                console.log(`Loaded ${churchData.length} churches with coordinates`);
+                
+                // Add markers to map
+                addChurchMarkers();
+                
+                // Fit map to show all churches
+                if (churchData.length > 0) {
+                    setTimeout(() => {
+                        fitMapToChurches();
+                    }, 500);
+                }
+                
+                hideLoading();
+                
+            } catch (error) {
+                console.error('Error loading church data:', error);
+                showError('Failed to load church data');
+                hideLoading();
+            }
+        }
+
+        // Add church markers to the map
+        function addChurchMarkers() {
+            // Clear existing markers
+            clearMarkers();
+            
+            console.log('Adding markers for churches:', churchData);
+            
+            churchData.forEach((church, index) => {
+                // Handle both coordinate formats
+                const lat = church.coordinates ? church.coordinates.lat : church.latitude;
+                const lng = church.coordinates ? church.coordinates.lng : church.longitude;
+                
+                console.log(`Church ${index + 1}: ${church.name} - Lat: ${lat}, Lng: ${lng}`);
+                
+                if (lat && lng) {
+                    const marker = L.marker([lat, lng], {
+                        icon: churchIcon,
+                        title: church.name
+                    });
+                    
+                    console.log(`Created marker for ${church.name} at [${lat}, ${lng}]`);
+                    
+                    // Create popup content
+                    const popupContent = createPopupContent(church);
+                    marker.bindPopup(popupContent, {
+                        maxWidth: 300,
+                        className: 'church-popup'
+                    });
+                    
+                    // Add click event
+                    marker.on('click', function() {
+                        console.log('Church clicked:', church.name);
+                        highlightChurch(church);
+                    });
+                    
+                    // Add to markers layer
+                    markersLayer.addLayer(marker);
+                    churchMarkers.push({
+                        marker: marker,
+                        church: church
+                    });
+                } else {
+                    console.log(`Skipping ${church.name} - missing coordinates`);
+                }
+            });
+            
+            console.log(`Added ${churchMarkers.length} church markers to map`);
+        }
+
+        // Create popup content for church
+        function createPopupContent(church) {
+            // Handle both coordinate formats
+            const lat = church.coordinates ? church.coordinates.lat : church.latitude;
+            const lng = church.coordinates ? church.coordinates.lng : church.longitude;
+            
+            return `
+                <div style="font-family: inherit; line-height: 1.4;">
+                    <h3 style="margin: 0 0 8px 0; color: #333; font-size: 1.1rem;">${church.name}</h3>
+                    <div style="color: #666; margin-bottom: 8px;">
+                        <div style="margin-bottom: 4px;">
+                            📍 ${church.street_address || 'Address not available'}
+                        </div>
+                        <div style="margin-bottom: 4px;">
+                            ${church.city}, ${church.state} ${church.zip_code || ''}
+                        </div>
+                        ${church.phone ? `<div style="margin-bottom: 4px;">📞 ${church.phone}</div>` : ''}
+                        ${church.website ? `<div style="margin-bottom: 8px;"><a href="${church.website}" target="_blank" style="color: #667eea; text-decoration: none;">🌐 Visit Website</a></div>` : ''}
+                        ${church.service_times ? `<div style="margin-bottom: 8px; font-size: 0.9rem;"><strong>Service Times:</strong><br>${church.service_times}</div>` : ''}
+                    </div>
+                    <div style="display: flex; gap: 8px; margin-top: 12px;">
+                        <button onclick="getDirections(${lat}, ${lng}, '${church.name.replace(/'/g, "\\'")}')" 
+                                style="flex: 1; padding: 6px 12px; background: #667eea; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">
+                            🧭 Directions
+                        </button>
+                        <button onclick="centerOnChurch(${lat}, ${lng})" 
+                                style="flex: 1; padding: 6px 12px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">
+                            🎯 Center
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Clear all markers from the map
+        function clearMarkers() {
+            markersLayer.clearLayers();
+            churchMarkers = [];
+        }
+
+        // Fit map to show all churches
+        function fitMapToChurches() {
+            if (churchMarkers.length === 0) {
+                console.log('No church markers to fit');
+                return;
+            }
+            
+            const group = new L.featureGroup(churchMarkers.map(item => item.marker));
+            map.fitBounds(group.getBounds(), {
+                padding: [20, 20],
+                maxZoom: 12
+            });
+            
+            console.log('Map fitted to show all churches');
+        }
+
+        // Center map on specific church
+        function centerOnChurch(lat, lng) {
+            map.setView([lat, lng], 15, {
+                animate: true,
+                duration: 1
+            });
+        }
+
+        // Highlight a specific church
+        function highlightChurch(church) {
+            // This will be enhanced in future tasks
+            console.log('Highlighting church:', church.name);
+        }
+
+        // Get directions to church (improved with manual location support)
+        function getDirections(lat, lng, churchName) {
+            // Check if user has set a manual location first
+            if (manualLocation) {
+                const userLat = manualLocation.getLatLng().lat;
+                const userLng = manualLocation.getLatLng().lng;
+                const url = `https://www.google.com/maps/dir/${userLat},${userLng}/${lat},${lng}`;
+                window.open(url, '_blank');
+                return;
+            }
+            
+            // Check if we have a current location from GPS
+            if (currentLocation) {
+                const userLat = currentLocation.getLatLng().lat;
+                const userLng = currentLocation.getLatLng().lng;
+                const url = `https://www.google.com/maps/dir/${userLat},${userLng}/${lat},${lng}`;
+                window.open(url, '_blank');
+                return;
+            }
+            
+            // Try to get current location
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const userLat = position.coords.latitude;
+                        const userLng = position.coords.longitude;
+                        
+                        // Open directions in default map app
+                        const url = `https://www.google.com/maps/dir/${userLat},${userLng}/${lat},${lng}`;
+                        window.open(url, '_blank');
+                    },
+                    function(error) {
+                        console.log('Geolocation error:', error);
+                        // Suggest setting manual location
+                        if (confirm(`Unable to get your location automatically. Would you like to set your location manually for accurate directions?`)) {
+                            setManualLocation();
+                        } else {
+                            // Fallback: open directions without starting point
+                            const url = `https://www.google.com/maps/dir//${lat},${lng}`;
+                            window.open(url, '_blank');
+                        }
+                    }
+                );
+            } else {
+                // Suggest setting manual location
+                if (confirm(`Geolocation not supported. Would you like to set your location manually for accurate directions?`)) {
+                    setManualLocation();
+                } else {
+                    // Fallback: open directions without starting point
+                    const url = `https://www.google.com/maps/dir//${lat},${lng}`;
+                    window.open(url, '_blank');
+                }
+            }
+        }
+
+        // Set manual location for accurate directions
+        function setManualLocation() {
+            // Create modal dialog for location setting
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 2000;
+                font-family: inherit;
+            `;
+            
+            modal.innerHTML = `
+                <div style="
+                    background: white;
+                    border-radius: 12px;
+                    padding: 24px;
+                    width: 90%;
+                    max-width: 450px;
+                    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+                    position: relative;
+                ">
+                    <div style="display: flex; align-items: center; margin-bottom: 16px;">
+                        <div style="
+                            background: #28a745;
+                            width: 32px;
+                            height: 32px;
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: white;
+                            font-size: 16px;
+                            margin-right: 12px;
+                        ">🏠</div>
+                        <h3 style="margin: 0; color: #333; font-size: 1.3rem;">Set Your Location</h3>
+                    </div>
+                    
+                    <p style="color: #666; margin-bottom: 20px; line-height: 1.5;">
+                        Set your location to get accurate directions to churches. You can either:
+                    </p>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <div style="
+                            background: #f8f9fa;
+                            border-radius: 8px;
+                            padding: 16px;
+                            margin-bottom: 16px;
+                        ">
+                            <div style="font-weight: 600; color: #333; margin-bottom: 8px;">
+                                📍 Option 1: Enter Your Address
+                            </div>
+                            <input type="text" id="locationAddressInput" placeholder="Enter your address, city, or zip code" style="
+                                width: 100%;
+                                padding: 10px 12px;
+                                border: 2px solid #e0e0e0;
+                                border-radius: 6px;
+                                font-size: 1rem;
+                                box-sizing: border-box;
+                                margin-bottom: 8px;
+                            ">
+                            <button id="searchLocationBtn" style="
+                                width: 100%;
+                                padding: 10px;
+                                background: #667eea;
+                                color: white;
+                                border: none;
+                                border-radius: 6px;
+                                font-size: 1rem;
+                                cursor: pointer;
+                                font-weight: 500;
+                            ">🔍 Find This Address</button>
+                        </div>
+                        
+                        <div style="
+                            background: #f8f9fa;
+                            border-radius: 8px;
+                            padding: 16px;
+                        ">
+                            <div style="font-weight: 600; color: #333; margin-bottom: 8px;">
+                                🎯 Option 2: Click on Map
+                            </div>
+                            <p style="margin: 0; color: #666; font-size: 0.9rem;">
+                                Close this dialog and click directly on the map where you're located
+                            </p>
+                            <button id="clickMapBtn" style="
+                                width: 100%;
+                                padding: 10px;
+                                background: #28a745;
+                                color: white;
+                                border: none;
+                                border-radius: 6px;
+                                font-size: 1rem;
+                                cursor: pointer;
+                                font-weight: 500;
+                                margin-top: 8px;
+                            ">🗺️ Click on Map</button>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                        <button id="cancelLocationBtn" style="
+                            padding: 10px 20px;
+                            background: #f5f5f5;
+                            color: #666;
+                            border: none;
+                            border-radius: 6px;
+                            cursor: pointer;
+                            font-size: 1rem;
+                        ">Cancel</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Focus the address input
+            setTimeout(() => {
+                document.getElementById('locationAddressInput').focus();
+            }, 100);
+            
+            // Handle address search
+            document.getElementById('searchLocationBtn').addEventListener('click', () => {
+                const address = document.getElementById('locationAddressInput').value.trim();
+                if (address) {
+                    document.body.removeChild(modal);
+                    searchAndSetManualLocation(address);
+                } else {
+                    document.getElementById('locationAddressInput').focus();
+                }
+            });
+            
+            // Handle Enter key in address input
+            document.getElementById('locationAddressInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const address = document.getElementById('locationAddressInput').value.trim();
+                    if (address) {
+                        document.body.removeChild(modal);
+                        searchAndSetManualLocation(address);
+                    }
+                }
+            });
+            
+            // Handle click on map option
+            document.getElementById('clickMapBtn').addEventListener('click', () => {
+                document.body.removeChild(modal);
+                enableMapClickMode();
+            });
+            
+            // Handle cancel
+            document.getElementById('cancelLocationBtn').addEventListener('click', () => {
+                document.body.removeChild(modal);
+            });
+            
+            // Handle clicking outside modal
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    document.body.removeChild(modal);
+                }
+            });
+        }
+        
+        // Enable map click mode for setting location
+        function enableMapClickMode() {
+            showSuccess('Click on the map where you are located');
+            
+            // Change cursor to crosshair
+            map.getContainer().style.cursor = 'crosshair';
+            
+            // Add click handler to map
+            function onMapClick(e) {
+                const lat = e.latlng.lat;
+                const lng = e.latlng.lng;
+                
+                // Remove existing manual location marker
+                if (manualLocation) {
+                    map.removeLayer(manualLocation);
+                }
+                
+                // Add manual location marker
+                manualLocation = L.marker([lat, lng], {
+                    icon: L.divIcon({
+                        html: `
+                            <div style="
+                                background: #28a745;
+                                width: 26px;
+                                height: 26px;
+                                border-radius: 50%;
+                                border: 3px solid white;
+                                box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                color: white;
+                                font-size: 14px;
+                                font-weight: bold;
+                            ">🏠</div>
+                        `,
+                        className: 'manual-location-icon',
+                        iconSize: [32, 32],
+                        iconAnchor: [16, 16],
+                        popupAnchor: [0, -16]
+                    })
+                }).addTo(map);
+                
+                // Add popup with options
+                manualLocation.bindPopup(`
+                    <div style="font-family: inherit;">
+                        <h4 style="margin: 0 0 8px 0; color: #28a745;">Your Location (Manual)</h4>
+                        <div style="color: #666; font-size: 0.9rem; margin-bottom: 8px;">
+                            <div>📍 ${lat.toFixed(6)}, ${lng.toFixed(6)}</div>
+                            <div style="margin-top: 4px;">This location will be used for directions</div>
+                        </div>
+                        <div style="display: flex; gap: 4px;">
+                            <button onclick="confirmManualLocation()" style="
+                                flex: 1;
+                                padding: 4px 8px;
+                                background: #28a745;
+                                color: white;
+                                border: none;
+                                border-radius: 3px;
+                                cursor: pointer;
+                                font-size: 0.8rem;
+                            ">✓ Confirm</button>
+                            <button onclick="searchForMyLocation()" style="
+                                flex: 1;
+                                padding: 4px 8px;
+                                background: #667eea;
+                                color: white;
+                                border: none;
+                                border-radius: 3px;
+                                cursor: pointer;
+                                font-size: 0.8rem;
+                            ">🔍 Search</button>
+                            <button onclick="removeManualLocation()" style="
+                                flex: 1;
+                                padding: 4px 8px;
+                                background: #dc3545;
+                                color: white;
+                                border: none;
+                                border-radius: 3px;
+                                cursor: pointer;
+                                font-size: 0.8rem;
+                            ">✗ Remove</button>
+                        </div>
+                    </div>
+                `).openPopup();
+                
+                // Remove click handler and restore cursor
+                map.off('click', onMapClick);
+                map.getContainer().style.cursor = '';
+                
+                showSuccess('Manual location set! Use the popup buttons to confirm, search for a better location, or remove it.');
+            }
+            
+            // Add the click handler
+            map.on('click', onMapClick);
+        }
+
+        // Confirm manual location
+        function confirmManualLocation() {
+            if (manualLocation) {
+                showSuccess('Manual location confirmed! This will be used for all directions.');
+                manualLocation.closePopup();
+            }
+        }
+
+        // Search for user's location
+        function searchForMyLocation() {
+            const address = prompt('Enter your address or location:');
+            if (address && address.trim()) {
+                searchAndSetManualLocation(address.trim());
+            }
+        }
+
+        // Search and set manual location with multiple strategies
+        async function searchAndSetManualLocation(address) {
+            try {
+                showLoading('Finding your location...');
+                
+                // Try multiple search strategies for better results
+                const searchStrategies = [
+                    improveSearchQuery(address),  // Original improved query
+                    address.trim(),               // Original query as-is
+                    `${address.trim()}, United States`  // Add country context
+                ];
+                
+                let bestResult = null;
+                let allResults = [];
+                
+                // Try each search strategy
+                for (let i = 0; i < searchStrategies.length; i++) {
+                    const searchQuery = searchStrategies[i];
+                    console.log(`Trying search strategy ${i + 1}: "${searchQuery}"`);
+                    
+                    try {
+                        const geocodeResponse = await fetch(ENDPOINTS.geocoding, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': getCsrfToken()
+                            },
+                            body: JSON.stringify({
+                                address: searchQuery,
+                                country: 'US'
+                            })
+                        });
+                        
+                        if (geocodeResponse.ok) {
+                            const geocodeResult = await geocodeResponse.json();
+                            if (geocodeResult.success) {
+                                allResults.push({
+                                    query: searchQuery,
+                                    result: geocodeResult,
+                                    specificity: calculateAddressSpecificity(geocodeResult.formatted_address)
+                                });
+                            }
+                        }
+                    } catch (error) {
+                        console.log(`Search strategy ${i + 1} failed:`, error);
+                    }
+                }
+                
+                // Choose the most specific result
+                if (allResults.length > 0) {
+                    bestResult = allResults.reduce((best, current) => 
+                        current.specificity > best.specificity ? current : best
+                    );
+                    
+                    console.log(`Selected result: "${bestResult.result.formatted_address}" (specificity: ${bestResult.specificity})`);
+                    
+                    // If the best result is still not specific enough, try Google Geocoding as fallback
+                    if (bestResult.specificity < 30) {
+                        console.log('Result not specific enough, trying Google Geocoding fallback...');
+                        try {
+                            const googleResult = await tryGoogleGeocoding(address);
+                            if (googleResult && googleResult.specificity > bestResult.specificity) {
+                                console.log('Using Google result instead:', googleResult.result.formatted_address);
+                                bestResult = googleResult;
+                            }
+                        } catch (error) {
+                            console.log('Google geocoding fallback failed:', error);
+                        }
+                    }
+                } else {
+                    throw new Error('No results found for any search strategy');
+                }
+                
+                const geocodeResult = bestResult.result;
+                
+                if (geocodeResult.success) {
+                    const lat = geocodeResult.coordinates.latitude;
+                    const lng = geocodeResult.coordinates.longitude;
+                    
+                    // Remove existing manual location
+                    if (manualLocation) {
+                        map.removeLayer(manualLocation);
+                    }
+                    
+                    // Add new manual location marker
+                    manualLocation = L.marker([lat, lng], {
+                        icon: L.divIcon({
+                            html: `
+                                <div style="
+                                    background: #28a745;
+                                    width: 26px;
+                                    height: 26px;
+                                    border-radius: 50%;
+                                    border: 3px solid white;
+                                    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    color: white;
+                                    font-size: 14px;
+                                    font-weight: bold;
+                                ">🏠</div>
+                            `,
+                            className: 'manual-location-icon',
+                            iconSize: [32, 32],
+                            iconAnchor: [16, 16],
+                            popupAnchor: [0, -16]
+                        })
+                    }).addTo(map);
+                    
+                    manualLocation.bindPopup(`
+                        <div style="font-family: inherit;">
+                            <h4 style="margin: 0 0 8px 0; color: #28a745;">Your Location (Manual)</h4>
+                            <div style="color: #666; font-size: 0.9rem; margin-bottom: 8px;">
+                                <div>📍 ${geocodeResult.formatted_address}</div>
+                                <div style="margin-top: 4px;">This location will be used for directions</div>
+                            </div>
+                            <button onclick="removeManualLocation()" style="
+                                padding: 4px 8px;
+                                background: #dc3545;
+                                color: white;
+                                border: none;
+                                border-radius: 3px;
+                                cursor: pointer;
+                                font-size: 0.8rem;
+                            ">✗ Remove</button>
+                        </div>
+                    `).openPopup();
+                    
+                    // Center map on the location
+                    map.setView([lat, lng], 12, { animate: true, duration: 1 });
+                    
+                    hideLoading();
+                    showSuccess(`Manual location set to: ${geocodeResult.formatted_address}`);
+                } else {
+                    throw new Error(geocodeResult.error || 'Location not found');
+                }
+                
+            } catch (error) {
+                hideLoading();
+                showError(`Could not find location "${address}". Try a different search term.`);
+            }
+        }
+
+        // Remove manual location
+        function removeManualLocation() {
+            if (manualLocation) {
+                map.removeLayer(manualLocation);
+                manualLocation = null;
+                showSuccess('Manual location removed. Directions will use automatic location detection.');
+            }
+        }
+
+        // Find user's current location with improved accuracy
+        function findUserLocation() {
+            if (!navigator.geolocation) {
+                showError('Geolocation is not supported by this browser');
+                return;
+            }
+            
+            showLoading('Finding your precise location...');
+            
+            // First try high accuracy GPS
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    const accuracy = position.coords.accuracy;
+                    
+                    console.log(`Location found: ${lat}, ${lng} (accuracy: ${accuracy}m)`);
+                    
+                    // Add user location marker with accuracy info
+                    if (currentLocation) {
+                        map.removeLayer(currentLocation);
+                    }
+                    
+                    currentLocation = L.marker([lat, lng], {
+                        icon: L.divIcon({
+                            html: `
+                                <div style="
+                                    background: #ff4444;
+                                    width: 24px;
+                                    height: 24px;
+                                    border-radius: 50%;
+                                    border: 3px solid white;
+                                    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    color: white;
+                                    font-size: 12px;
+                                    font-weight: bold;
+                                ">📍</div>
+                            `,
+                            className: 'user-location-icon',
+                            iconSize: [30, 30],
+                            iconAnchor: [15, 15]
+                        })
+                    }).addTo(map);
+                    
+                    // Create popup with location details and accuracy
+                    const accuracyText = accuracy < 100 ? 'High accuracy' : 
+                                        accuracy < 1000 ? 'Medium accuracy' : 'Low accuracy';
+                    
+                    currentLocation.bindPopup(`
+                        <div style="font-family: inherit;">
+                            <h4 style="margin: 0 0 8px 0; color: #ff4444;">Your Location</h4>
+                            <div style="color: #666; font-size: 0.9rem;">
+                                <div>📍 ${lat.toFixed(6)}, ${lng.toFixed(6)}</div>
+                                <div>🎯 ${accuracyText} (±${Math.round(accuracy)}m)</div>
+                                ${accuracy > 1000 ? '<div style="color: #ff6b6b; margin-top: 4px;">⚠️ Location may be inaccurate</div>' : ''}
+                            </div>
+                            <button onclick="tryBetterLocation()" style="
+                                margin-top: 8px;
+                                padding: 4px 8px;
+                                background: #667eea;
+                                color: white;
+                                border: none;
+                                border-radius: 3px;
+                                cursor: pointer;
+                                font-size: 0.8rem;
+                            ">🔄 Try Again</button>
+                        </div>
+                    `).openPopup();
+                    
+                    // Center map on user location
+                    map.setView([lat, lng], 12, {
+                        animate: true,
+                        duration: 1
+                    });
+                    
+                    hideLoading();
+                    
+                    // Show different messages based on accuracy
+                    if (accuracy < 100) {
+                        showSuccess('High accuracy location found!');
+                    } else if (accuracy < 1000) {
+                        showSuccess('Location found with medium accuracy');
+                    } else {
+                        showSuccess('Location found, but accuracy may be limited');
+                    }
+                },
+                function(error) {
+                    hideLoading();
+                    let errorMessage = 'Unable to get your location';
+                    let suggestion = '';
+                    
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage = 'Location access denied';
+                            suggestion = 'Please allow location access and try again, or search for your city instead.';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage = 'Location information unavailable';
+                            suggestion = 'Try searching for your city or address instead.';
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage = 'Location request timed out';
+                            suggestion = 'Try again or search for your city instead.';
+                            break;
+                    }
+                    
+                    showError(`${errorMessage}. ${suggestion}`);
+                    
+                    // Suggest manual search as alternative
+                    setTimeout(() => {
+                        if (confirm('Would you like to search for your location manually instead?')) {
+                            document.getElementById('searchInput').focus();
+                        }
+                    }, 2000);
+                },
+                {
+                    enableHighAccuracy: true,    // Use GPS if available
+                    timeout: 15000,              // Wait up to 15 seconds
+                    maximumAge: 60000            // Use cached location if less than 1 minute old
+                }
+            );
+        }
+
+        // Try to get better location accuracy
+        function tryBetterLocation() {
+            if (currentLocation) {
+                map.removeLayer(currentLocation);
+                currentLocation = null;
+            }
+            
+            showLoading('Trying to get better location accuracy...');
+            
+            // Try with even higher accuracy settings
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    const accuracy = position.coords.accuracy;
+                    
+                    console.log(`Better location attempt: ${lat}, ${lng} (accuracy: ${accuracy}m)`);
+                    
+                    currentLocation = L.marker([lat, lng], {
+                        icon: L.divIcon({
+                            html: `
+                                <div style="
+                                    background: #28a745;
+                                    width: 24px;
+                                    height: 24px;
+                                    border-radius: 50%;
+                                    border: 3px solid white;
+                                    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    color: white;
+                                    font-size: 12px;
+                                    font-weight: bold;
+                                ">📍</div>
+                            `,
+                            className: 'user-location-icon-improved',
+                            iconSize: [30, 30],
+                            iconAnchor: [15, 15]
+                        })
+                    }).addTo(map);
+                    
+                    const accuracyText = accuracy < 100 ? 'High accuracy' : 
+                                        accuracy < 1000 ? 'Medium accuracy' : 'Low accuracy';
+                    
+                    currentLocation.bindPopup(`
+                        <div style="font-family: inherit;">
+                            <h4 style="margin: 0 0 8px 0; color: #28a745;">Improved Location</h4>
+                            <div style="color: #666; font-size: 0.9rem;">
+                                <div>📍 ${lat.toFixed(6)}, ${lng.toFixed(6)}</div>
+                                <div>🎯 ${accuracyText} (±${Math.round(accuracy)}m)</div>
+                            </div>
+                        </div>
+                    `).openPopup();
+                    
+                    map.setView([lat, lng], 14, { animate: true, duration: 1 });
+                    hideLoading();
+                    showSuccess('Location updated with better accuracy!');
+                },
+                function(error) {
+                    hideLoading();
+                    showError('Could not improve location accuracy. Try searching for your city instead.');
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 20000,
+                    maximumAge: 0  // Force fresh location
+                }
+            );
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            const searchInput = document.getElementById('searchInput');
+            const searchButton = document.getElementById('searchButton');
+
+            // Search button click
+            searchButton.addEventListener('click', performSearch);
+
+            // Enter key in search input
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+
+            // Clear search on escape
+            searchInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    clearSearch();
+                }
+            });
+        }
+
+        // Perform comprehensive search
+        async function performSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            
+            if (!query) {
+                showError('Please enter a search location or church name');
+                return;
+            }
+
+            showLoading('Searching...');
+            
+            try {
+                console.log('Search query:', query);
+                
+                // First try church name search
+                const churchResults = await searchChurchesByName(query);
+                
+                if (churchResults.length > 0) {
+                    // Found churches by name
+                    displaySearchResults(churchResults, 'church');
+                    if (churchResults.length === 1) {
+                        // If only one church found, center on it
+                        const church = churchResults[0];
+                        const lat = church.coordinates ? church.coordinates.lat : church.latitude;
+                        const lng = church.coordinates ? church.coordinates.lng : church.longitude;
+                        centerOnChurch(lat, lng);
+                        highlightChurch(church);
+                    }
+                } else {
+                    // No churches found by name, try location search
+                    await performLocationSearch(query);
+                }
+                
+                hideLoading();
+                
+            } catch (error) {
+                console.error('Search error:', error);
+                showError('Search failed. Please try again.');
+                hideLoading();
+            }
+        }
+
+        // Search churches by name
+        async function searchChurchesByName(query) {
+            const matchingChurches = churchData.filter(church => {
+                const name = church.name.toLowerCase();
+                const city = church.city.toLowerCase();
+                const state = church.state.toLowerCase();
+                const searchQuery = query.toLowerCase();
+                
+                return name.includes(searchQuery) || 
+                       city.includes(searchQuery) || 
+                       state.includes(searchQuery) ||
+                       (church.street_address && church.street_address.toLowerCase().includes(searchQuery));
+            });
+            
+            console.log(`Found ${matchingChurches.length} churches matching "${query}"`);
+            return matchingChurches;
+        }
+
+        // Perform location-based search using geocoding
+        async function performLocationSearch(query) {
+            try {
+                showLoading('Finding location...');
+                
+                // Improve search query for better Ohio results
+                let searchQuery = improveSearchQuery(query);
+                console.log(`Original query: "${query}" -> Improved query: "${searchQuery}"`);
+                
+                // Use the geocoding API to find the location
+                const geocodeResponse = await fetch(ENDPOINTS.geocoding, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCsrfToken()
+                    },
+                    body: JSON.stringify({
+                        address: searchQuery,
+                        country: 'US'
+                    })
+                });
+                
+                if (!geocodeResponse.ok) {
+                    throw new Error(`Geocoding failed: ${geocodeResponse.status}`);
+                }
+                
+                const geocodeResult = await geocodeResponse.json();
+                
+                if (geocodeResult.success) {
+                    const lat = geocodeResult.coordinates.latitude;
+                    const lng = geocodeResult.coordinates.longitude;
+                    
+                    console.log(`Location found: ${lat}, ${lng}`);
+                    
+                    // Center map on the found location
+                    map.setView([lat, lng], 12, { animate: true, duration: 1 });
+                    
+                    // Add a search location marker
+                    addSearchLocationMarker(lat, lng, geocodeResult.formatted_address);
+                    
+                    // Find nearby churches
+                    const nearbyChurches = findNearbyChurches(lat, lng, 50); // 50km radius
+                    
+                    if (nearbyChurches.length > 0) {
+                        displaySearchResults(nearbyChurches, 'location', geocodeResult.formatted_address);
+                        showSuccess(`Found ${nearbyChurches.length} churches near "${geocodeResult.formatted_address}"`);
+                    } else {
+                        displaySearchResults([], 'location', geocodeResult.formatted_address);
+                        showSuccess(`Location found: "${geocodeResult.formatted_address}" - No churches within 50km`);
+                    }
+                } else {
+                    throw new Error(geocodeResult.error || 'Location not found');
+                }
+                
+            } catch (error) {
+                console.error('Location search error:', error);
+                showError(`Could not find location "${query}". Try a different search term.`);
+            }
+        }
+
+        // Find nearby churches within a radius
+        function findNearbyChurches(lat, lng, radiusKm) {
+            return churchData.filter(church => {
+                const churchLat = church.coordinates ? church.coordinates.lat : church.latitude;
+                const churchLng = church.coordinates ? church.coordinates.lng : church.longitude;
+                
+                if (!churchLat || !churchLng) return false;
+                
+                const distance = calculateDistance(lat, lng, churchLat, churchLng);
+                church.searchDistance = distance; // Add distance for sorting
+                return distance <= radiusKm;
+            }).sort((a, b) => a.searchDistance - b.searchDistance); // Sort by distance
+        }
+
+        // Calculate distance between two points using Haversine formula
+        function calculateDistance(lat1, lng1, lat2, lng2) {
+            const R = 6371; // Earth's radius in kilometers
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLng = (lng2 - lng1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLng/2) * Math.sin(dLng/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        // Add search location marker
+        let searchLocationMarker = null;
+        function addSearchLocationMarker(lat, lng, address) {
+            // Remove existing search marker
+            if (searchLocationMarker) {
+                map.removeLayer(searchLocationMarker);
+            }
+            
+            searchLocationMarker = L.marker([lat, lng], {
+                icon: L.divIcon({
+                    html: `
+                        <div style="
+                            background: #28a745;
+                            width: 24px;
+                            height: 24px;
+                            border-radius: 50%;
+                            border: 3px solid white;
+                            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: white;
+                            font-size: 12px;
+                            font-weight: bold;
+                        ">🔍</div>
+                    `,
+                    className: 'search-location-icon',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15],
+                    popupAnchor: [0, -15]
+                })
+            }).addTo(map);
+            
+            searchLocationMarker.bindPopup(`
+                <div style="font-family: inherit;">
+                    <h4 style="margin: 0 0 8px 0; color: #28a745;">Search Location</h4>
+                    <p style="margin: 0; color: #666;">${address}</p>
+                </div>
+            `);
+        }
+
+        // Display search results in the sidebar
+        function displaySearchResults(results, searchType, locationName = '') {
+            const resultsContainer = document.getElementById('resultsContainer');
+            
+            if (results.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #666;">
+                        <h4 style="margin: 0 0 1rem 0;">No Results Found</h4>
+                        <p style="margin: 0;">
+                            ${searchType === 'church' ? 
+                                'No churches found matching your search.' : 
+                                `No churches found within 50km of "${locationName}".`
+                            }
+                        </p>
+                        <button onclick="clearSearch()" style="
+                            margin-top: 1rem;
+                            padding: 0.5rem 1rem;
+                            background: #667eea;
+                            color: white;
+                            border: none;
+                            border-radius: 4px;
+                            cursor: pointer;
+                        ">Clear Search</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `
+                <div style="padding: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h4 style="margin: 0; color: #333;">
+                            ${searchType === 'church' ? 'Matching Churches' : 'Nearby Churches'}
+                            <span style="color: #666; font-weight: normal;">(${results.length})</span>
+                        </h4>
+                        <button onclick="clearSearch()" style="
+                            padding: 0.25rem 0.5rem;
+                            background: #dc3545;
+                            color: white;
+                            border: none;
+                            border-radius: 3px;
+                            cursor: pointer;
+                            font-size: 0.8rem;
+                        ">Clear</button>
+                    </div>
+            `;
+            
+            if (searchType === 'location' && locationName) {
+                html += `
+                    <div style="background: #e8f5e8; padding: 0.75rem; border-radius: 4px; margin-bottom: 1rem; font-size: 0.9rem;">
+                        <strong>📍 Search Location:</strong><br>
+                        ${locationName}
+                    </div>
+                `;
+            }
+            
+            results.forEach((church, index) => {
+                const lat = church.coordinates ? church.coordinates.lat : church.latitude;
+                const lng = church.coordinates ? church.coordinates.lng : church.longitude;
+                const distance = church.searchDistance ? ` (${church.searchDistance.toFixed(1)}km away)` : '';
+                
+                html += `
+                    <div style="
+                        border: 1px solid #e0e0e0;
+                        border-radius: 8px;
+                        padding: 1rem;
+                        margin-bottom: 0.75rem;
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                        background: white;
+                    " 
+                    onclick="selectSearchResult(${lat}, ${lng}, '${church.name.replace(/'/g, "\\'")}')"
+                    onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'; this.style.borderColor='#667eea'"
+                    onmouseout="this.style.boxShadow='none'; this.style.borderColor='#e0e0e0'">
+                        
+                        <h5 style="margin: 0 0 0.5rem 0; color: #333; font-size: 1rem;">
+                            ${church.name}
+                        </h5>
+                        
+                        <div style="color: #666; font-size: 0.9rem; line-height: 1.4;">
+                            <div style="margin-bottom: 0.25rem;">
+                                📍 ${church.street_address || 'Address not available'}
+                            </div>
+                            <div style="margin-bottom: 0.25rem;">
+                                ${church.city}, ${church.state} ${church.zip_code || ''}${distance}
+                            </div>
+                            ${church.phone ? `<div style="margin-bottom: 0.25rem;">📞 ${church.phone}</div>` : ''}
+                            ${church.service_times ? `<div style="font-size: 0.8rem; color: #888;">⏰ ${church.service_times}</div>` : ''}
+                        </div>
+                        
+                        <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem;">
+                            <button onclick="event.stopPropagation(); centerOnChurch(${lat}, ${lng})" style="
+                                flex: 1;
+                                padding: 0.4rem 0.8rem;
+                                background: #28a745;
+                                color: white;
+                                border: none;
+                                border-radius: 4px;
+                                cursor: pointer;
+                                font-size: 0.8rem;
+                            ">🎯 View</button>
+                            <button onclick="event.stopPropagation(); getDirections(${lat}, ${lng}, '${church.name.replace(/'/g, "\\'")}')" style="
+                                flex: 1;
+                                padding: 0.4rem 0.8rem;
+                                background: #667eea;
+                                color: white;
+                                border: none;
+                                border-radius: 4px;
+                                cursor: pointer;
+                                font-size: 0.8rem;
+                            ">🧭 Directions</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            resultsContainer.innerHTML = html;
+        }
+
+        // Handle search result selection
+        function selectSearchResult(lat, lng, churchName) {
+            centerOnChurch(lat, lng);
+            
+            // Find and open the church marker popup
+            churchMarkers.forEach(item => {
+                if (item.church.name === churchName) {
+                    item.marker.openPopup();
+                }
+            });
+            
+            showSuccess(`Centered on ${churchName}`);
+        }
+
+        // Improve search query for better Ohio results
+        function improveSearchQuery(query) {
+            const lowerQuery = query.toLowerCase().trim();
+            
+            // Common Ohio city patterns that need clarification
+            const ohioCities = {
+                'dayton': 'Dayton, OH',
+                'columbus': 'Columbus, OH', 
+                'cincinnati': 'Cincinnati, OH',
+                'cleveland': 'Cleveland, OH',
+                'toledo': 'Toledo, OH',
+                'akron': 'Akron, OH',
+                'youngstown': 'Youngstown, OH',
+                'canton': 'Canton, OH',
+                'hamilton': 'Hamilton, OH',
+                'springfield': 'Springfield, OH',
+                'mansfield': 'Mansfield, OH',
+                'lima': 'Lima, OH',
+                'findlay': 'Findlay, OH',
+                'zanesville': 'Zanesville, OH',
+                'marietta': 'Marietta, OH',
+                'williamsburg': 'Williamsburg, OH'
+            };
+            
+            // If query is just a city name that exists in Ohio, add ", OH"
+            if (ohioCities[lowerQuery]) {
+                return ohioCities[lowerQuery];
+            }
+            
+            // Handle street address patterns like "street city state"
+            const streetCityStateMatch = lowerQuery.match(/^(.+?)\s+([\w\s]+?)\s+(oh|ohio)$/i);
+            if (streetCityStateMatch) {
+                const street = streetCityStateMatch[1].trim();
+                const city = streetCityStateMatch[2].trim();
+                return `${street}, ${city}, OH`;
+            }
+            
+            // Handle patterns like "street city" where city is known Ohio city
+            for (const [city, fullCity] of Object.entries(ohioCities)) {
+                const streetCityPattern = new RegExp(`^(.+?)\\s+${city}$`, 'i');
+                const streetCityMatch = lowerQuery.match(streetCityPattern);
+                if (streetCityMatch) {
+                    const street = streetCityMatch[1].trim();
+                    return `${street}, ${fullCity}`;
+                }
+            }
+            
+            // If query contains "ohio" but not "OH", standardize it
+            if (lowerQuery.includes('ohio') && !lowerQuery.includes(', oh')) {
+                return query.replace(/\s*,?\s*ohio\s*$/i, ', OH');
+            }
+            
+            // If query looks like "city state" format, ensure proper formatting
+            const cityStateMatch = lowerQuery.match(/^([a-z\s]+)\s+(oh|ohio)$/i);
+            if (cityStateMatch) {
+                const city = cityStateMatch[1].trim();
+                return `${city}, OH`;
+            }
+            
+            // For zip codes in Ohio range, add Ohio context
+            const zipMatch = query.match(/^\d{5}$/);
+            if (zipMatch) {
+                const zip = parseInt(zipMatch[0]);
+                // Ohio zip codes are roughly 43000-45999
+                if (zip >= 43000 && zip <= 45999) {
+                    return `${query}, OH`;
+                }
+            }
+            
+            // Return original query if no improvements needed
+            return query;
+        }
+
+        // Calculate address specificity score to choose best geocoding result
+        function calculateAddressSpecificity(formattedAddress) {
+            if (!formattedAddress) return 0;
+            
+            const address = formattedAddress.toLowerCase();
+            let score = 0;
+            
+            // Higher score for more specific components
+            if (address.match(/\d+\s+\w+\s+(st|street|rd|road|ave|avenue|dr|drive|ln|lane|blvd|boulevard|ct|court|pl|place|way|cir|circle)/)) {
+                score += 50; // Street address with number
+            }
+            
+            if (address.match(/\b\d+\b/)) {
+                score += 20; // Contains house number
+            }
+            
+            if (address.match(/\b(st|street|rd|road|ave|avenue|dr|drive|ln|lane|blvd|boulevard|ct|court|pl|place|way|cir|circle)\b/)) {
+                score += 30; // Contains street type
+            }
+            
+            // Penalize generic locations
+            if (address.includes('township')) {
+                score -= 20;
+            }
+            
+            if (address.includes('county')) {
+                score -= 30;
+            }
+            
+            if (address.match(/^[a-z\s]+,\s*oh,\s*us$/)) {
+                score -= 10; // Just city, state, country
+            }
+            
+            // Bonus for Ohio addresses
+            if (address.includes('oh') || address.includes('ohio')) {
+                score += 5;
+            }
+            
+            console.log(`Address specificity for "${formattedAddress}": ${score}`);
+            return score;
+        }
+
+        // Try Google Geocoding as fallback when OpenRouteService isn't specific enough
+        async function tryGoogleGeocoding(address) {
+            try {
+                // Use Google's geocoding service via a public API
+                const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&countrycodes=us&limit=1&addressdetails=1`);
+                
+                if (!response.ok) {
+                    throw new Error(`Nominatim API error: ${response.status}`);
+                }
+                
+                const results = await response.json();
+                
+                if (results && results.length > 0) {
+                    const result = results[0];
+                    const formattedAddress = result.display_name;
+                    
+                    return {
+                        result: {
+                            success: true,
+                            coordinates: {
+                                latitude: parseFloat(result.lat),
+                                longitude: parseFloat(result.lon)
+                            },
+                            formatted_address: formattedAddress
+                        },
+                        specificity: calculateAddressSpecificity(formattedAddress)
+                    };
+                }
+                
+                return null;
+            } catch (error) {
+                console.log('Nominatim fallback failed:', error);
+                return null;
+            }
+        }
+
+        // Get CSRF token for API requests
+        function getCsrfToken() {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                const [name, value] = cookie.trim().split('=');
+                if (name === 'csrftoken') {
+                    return value;
+                }
+            }
+            return '';
+        }
+
+        // Clear search
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('resultsContainer').innerHTML = 
+                '<p style="color: #666; text-align: center; margin-top: 2rem;">Search for a location to see nearby churches</p>';
+            
+            // Remove search location marker if it exists
+            if (searchLocationMarker) {
+                map.removeLayer(searchLocationMarker);
+                searchLocationMarker = null;
+            }
+            
+            // Fit map back to show all churches
+            fitMapToChurches();
+            
+            showSuccess('Search cleared');
+        }
+
+        // Utility functions
+        function showLoading(message = 'Loading...') {
+            const overlay = document.getElementById('loadingOverlay');
+            const text = overlay.querySelector('.loading-text');
+            text.textContent = message;
+            overlay.style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Handle responsive behavior
+        function handleResize() {
+            if (map) {
+                map.invalidateSize();
+            }
+        }
+
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('orientationchange', function() {
+            setTimeout(handleResize, 100);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,607 @@
+Starting geocoding for 2 churches
+Processing church 1/2: Church 1
+✓ Church 1: Successfully geocoded to (40.7128, -74.006)
+Processing church 2/2: Church 3
+✗ Church 3: Geocoding failed: Address not found
+Geocoding completed: 1 successful, 1 failed, 0 skipped
+Starting geocoding for 1 churches
+Processing church 1/1: Test Church
+Geocoding completed: 0 successful, 0 failed, 1 skipped
+Starting import of 3 church records
+✓ Created: Valid Church
+Import completed: 1 created, 0 updated, 2 failed
+Starting import of 2 church records
+✓ Created: Test Church 1
+✓ Created: Test Church 2
+Import completed: 2 created, 0 updated, 0 failed
+Starting import of 2 church records
+✓ Updated: Test Church 1
+✓ Created: Test Church 2
+Import completed: 1 created, 1 updated, 0 failed
+Geocoding batch progress: 1/3
+Geocoding attempt 1/4 for: 123 Main St
+Geocoding batch progress: 2/3
+Geocoding attempt 1/4 for: 456 Oak Ave
+Geocoding batch progress: 3/3
+Geocoding attempt 1/4 for: 789 Pine Rd
+Using cached geocoding result for: 123 Main St
+Geocoding attempt 1/4 for: 123 Main St
+Using cached geocoding result for: 123 Main St
+Geocoding attempt 1/4 for: Invalid Address
+Geocoding attempt 1/4 for: Nonexistent Address
+Using cached geocoding result for: 123 Main St
+Using cached geocoding result for: 123 Main St
+Geocoding attempt 1/4 for: 123 Main St, New York, NY
+Geocoding batch progress: 1/3
+Geocoding attempt 1/4 for: 123 Main St
+Geocoding batch progress: 2/3
+Geocoding attempt 1/4 for: 456 Oak Ave
+Geocoding batch progress: 3/3
+Geocoding attempt 1/4 for: 789 Pine Rd
+Using cached geocoding result for: 123 Main St
+Geocoding attempt 1/4 for: 123 Main St
+Using cached geocoding result for: 123 Main St
+Geocoding attempt 1/4 for: Invalid Address
+Geocoding attempt 1/4 for: Nonexistent Address
+Using cached geocoding result for: 123 Main St
+Using cached geocoding result for: 123 Main St
+Geocoding attempt 1/4 for: 123 Main St, New York, NY
+Starting geocoding for 2 churches
+Processing church 1/2: Church 1
+✓ Church 1: Successfully geocoded to (40.7128, -74.006)
+Processing church 2/2: Church 3
+✗ Church 3: Geocoding failed: Address not found
+Geocoding completed: 1 successful, 1 failed, 0 skipped
+Starting geocoding for 1 churches
+Processing church 1/1: Test Church
+Geocoding completed: 0 successful, 0 failed, 1 skipped
+Starting import of 3 church records
+✓ Created: Valid Church
+Import completed: 1 created, 0 updated, 2 failed
+Starting import of 2 church records
+✓ Created: Test Church 1
+✓ Created: Test Church 2
+Import completed: 2 created, 0 updated, 0 failed
+Starting import of 2 church records
+✓ Updated: Test Church 1
+✓ Created: Test Church 2
+Import completed: 1 created, 1 updated, 0 failed
+Geocoding batch progress: 1/3
+Geocoding attempt 1/4 for: 123 Main St
+Geocoding batch progress: 2/3
+Geocoding attempt 1/4 for: 456 Oak Ave
+Geocoding batch progress: 3/3
+Geocoding attempt 1/4 for: 789 Pine Rd
+Using cached geocoding result for: 123 Main St
+Geocoding attempt 1/4 for: 123 Main St
+Geocoding attempt 1/4 for: 123 Main St
+Geocoding attempt 1/4 for: Invalid Address
+Geocoding attempt 1/4 for: Nonexistent Address
+Geocoding attempt 1/3 for: 123 Main St
+Geocoding attempt 1/2 for: 123 Main St
+Geocoding timeout for 123 Main St: Request timeout: Request timed out
+Geocoding attempt 2/2 for: 123 Main St
+Geocoding timeout for 123 Main St: Request timeout: Request timed out
+Failed to geocode 123 Main St: Geocoding failed after 2 attempts: Request timeout: Request timed out
+Geocoding attempt 1/4 for: 123 Main St, New York, NY
+Geocoding attempt 1/4 for: 123 Main St
+HTTP error geocoding 123 Main St: HTTP error unknown: 404 Not Found
+Failed to geocode 123 Main St: Geocoding failed after 4 attempts: HTTP error unknown: 404 Not Found
+Geocoding attempt 1/3 for: 123 Main St
+HTTP error geocoding 123 Main St: HTTP error unknown: 
+Failed to geocode 123 Main St: Geocoding failed after 3 attempts: HTTP error unknown: 
+Starting geocoding for 2 churches
+Processing church 1/2: Church 1
+✓ Church 1: Successfully geocoded to (40.7128, -74.006)
+Processing church 2/2: Church 3
+✗ Church 3: Geocoding failed: Address not found
+Geocoding completed: 1 successful, 1 failed, 0 skipped
+Starting geocoding for 1 churches
+Processing church 1/1: Test Church
+Geocoding completed: 0 successful, 0 failed, 1 skipped
+Starting import of 3 church records
+✓ Created: Valid Church
+Import completed: 1 created, 0 updated, 2 failed
+Starting import of 2 church records
+✓ Created: Test Church 1
+✓ Created: Test Church 2
+Import completed: 2 created, 0 updated, 0 failed
+Starting import of 2 church records
+✓ Updated: Test Church 1
+✓ Created: Test Church 2
+Import completed: 1 created, 1 updated, 0 failed
+Geocoding batch progress: 1/3
+Geocoding attempt 1/4 for: 123 Main St
+Geocoding batch progress: 2/3
+Geocoding attempt 1/4 for: 456 Oak Ave
+Geocoding batch progress: 3/3
+Geocoding attempt 1/4 for: 789 Pine Rd
+Using cached geocoding result for: 123 Main St
+Geocoding attempt 1/4 for: 123 Main St
+Geocoding attempt 1/4 for: 123 Main St
+HTTP error geocoding 123 Main St: HTTP error unknown: 404 Not Found
+Failed to geocode 123 Main St: Geocoding failed after 4 attempts: HTTP error unknown: 404 Not Found
+Geocoding attempt 1/4 for: Invalid Address
+Geocoding attempt 1/4 for: Nonexistent Address
+Geocoding attempt 1/3 for: 123 Main St
+Rate limit hit for 123 Main St, attempt 1
+Geocoding attempt 2/3 for: 123 Main St
+Geocoding attempt 1/2 for: 123 Main St
+Geocoding timeout for 123 Main St: Request timeout: Request timed out
+Geocoding attempt 2/2 for: 123 Main St
+Geocoding timeout for 123 Main St: Request timeout: Request timed out
+Failed to geocode 123 Main St: Geocoding failed after 2 attempts: Request timeout: Request timed out
+Geocoding attempt 1/4 for: 123 Main St, New York, NY
+Starting import of 5 church records
+✓ Created: New Testament Church of Atlanta
+✓ Created: New Testament Church of Dallas
+✓ Created: New Testament Church of Phoenix
+✓ Created: New Testament Church of Seattle
+✓ Created: New Testament Church of Miami
+Import completed: 5 created, 0 updated, 0 failed
+Starting import of 2 church records
+✓ Created: Valid Church
+Import completed: 1 created, 0 updated, 1 failed
+Starting import of 5 church records
+✓ Created: New Testament Church of Atlanta
+✓ Created: New Testament Church of Dallas
+✓ Created: New Testament Church of Phoenix
+✓ Created: New Testament Church of Seattle
+✓ Created: New Testament Church of Miami
+Import completed: 5 created, 0 updated, 0 failed
+Starting import of 2 church records
+✓ Created: Test Church 1
+✓ Created: Test Church 2
+Import completed: 2 created, 0 updated, 0 failed
+Starting import of 2 church records
+✓ Created: JSON Church 1
+✓ Created: JSON Church 2
+Import completed: 2 created, 0 updated, 0 failed
+Starting import of 5 church records
+✓ Created: New Testament Church of Atlanta
+✓ Created: New Testament Church of Dallas
+✓ Created: New Testament Church of Phoenix
+✓ Created: New Testament Church of Seattle
+✓ Created: New Testament Church of Miami
+Import completed: 5 created, 0 updated, 0 failed
+Starting import of 5 church records
+✓ Created: New Testament Church of Atlanta
+✓ Created: New Testament Church of Dallas
+✓ Created: New Testament Church of Phoenix
+✓ Created: New Testament Church of Seattle
+✓ Created: New Testament Church of Miami
+Import completed: 5 created, 0 updated, 0 failed
+Starting geocoding for 5 churches
+Processing church 1/5: New Testament Church of Phoenix
+Geocoding batch progress: 1/3
+Geocoding attempt 1/4 for: 123 Main St
+Geocoding batch progress: 2/3
+Geocoding attempt 1/4 for: 456 Oak Ave
+Geocoding batch progress: 3/3
+Geocoding attempt 1/4 for: 789 Pine Rd
+Using cached geocoding result for: 123 Main St
+Geocoding attempt 1/4 for: 123 Main St
+Geocoding attempt 1/4 for: 123 Main St
+HTTP error geocoding 123 Main St: HTTP error unknown: 404 Not Found
+Failed to geocode 123 Main St: Geocoding failed after 4 attempts: HTTP error unknown: 404 Not Found
+Geocoding attempt 1/4 for: Invalid Address
+Geocoding attempt 1/4 for: Nonexistent Address
+Geocoding attempt 1/3 for: 123 Main St
+Rate limit hit for 123 Main St, attempt 1
+Geocoding attempt 2/3 for: 123 Main St
+Geocoding attempt 1/2 for: 123 Main St
+Geocoding timeout for 123 Main St: Request timeout: Request timed out
+Geocoding attempt 2/2 for: 123 Main St
+Geocoding timeout for 123 Main St: Request timeout: Request timed out
+Failed to geocode 123 Main St: Geocoding failed after 2 attempts: Request timeout: Request timed out
+Geocoding attempt 1/4 for: 123 Main St, New York, NY
+Starting geocoding for 2 churches
+Processing church 1/2: Church 1
+✓ Church 1: Successfully geocoded to (40.7128, -74.006)
+Processing church 2/2: Church 3
+✗ Church 3: Geocoding failed: Address not found
+Geocoding completed: 1 successful, 1 failed, 0 skipped
+Starting geocoding for 1 churches
+Processing church 1/1: Test Church
+Geocoding completed: 0 successful, 0 failed, 1 skipped
+Starting import of 3 church records
+✓ Created: Valid Church
+Import completed: 1 created, 0 updated, 2 failed
+Starting import of 2 church records
+✓ Created: Test Church 1
+✓ Created: Test Church 2
+Import completed: 2 created, 0 updated, 0 failed
+Starting import of 2 church records
+✓ Updated: Test Church 1
+✓ Created: Test Church 2
+Import completed: 1 created, 1 updated, 0 failed
+Starting geocoding for 2 churches
+Processing church 1/2: Church 1
+✓ Church 1: Successfully geocoded to (40.7128, -74.006)
+Processing church 2/2: Church 3
+✗ Church 3: Geocoding failed: Address not found
+Geocoding completed: 1 successful, 1 failed, 0 skipped
+Starting geocoding for 1 churches
+Processing church 1/1: Test Church
+Geocoding completed: 0 successful, 0 failed, 1 skipped
+Starting import of 3 church records
+✓ Created: Valid Church
+Import completed: 1 created, 0 updated, 2 failed
+Starting import of 2 church records
+✓ Created: Test Church 1
+✓ Created: Test Church 2
+Import completed: 2 created, 0 updated, 0 failed
+Starting import of 2 church records
+✓ Updated: Test Church 1
+✓ Created: Test Church 2
+Import completed: 1 created, 1 updated, 0 failed
+Geocoding batch progress: 1/3
+Geocoding attempt 1/4 for: 123 Main St
+Geocoding batch progress: 2/3
+Geocoding attempt 1/4 for: 456 Oak Ave
+Geocoding batch progress: 3/3
+Geocoding attempt 1/4 for: 789 Pine Rd
+Using cached geocoding result for: 123 Main St
+Geocoding attempt 1/4 for: 123 Main St
+Geocoding attempt 1/4 for: 123 Main St
+HTTP error geocoding 123 Main St: HTTP error unknown: 404 Not Found
+Failed to geocode 123 Main St: Geocoding failed after 4 attempts: HTTP error unknown: 404 Not Found
+Geocoding attempt 1/4 for: Invalid Address
+Geocoding attempt 1/4 for: Nonexistent Address
+Geocoding attempt 1/3 for: 123 Main St
+Rate limit hit for 123 Main St, attempt 1
+Geocoding attempt 2/3 for: 123 Main St
+Geocoding attempt 1/2 for: 123 Main St
+Geocoding timeout for 123 Main St: Request timeout: Request timed out
+Geocoding attempt 2/2 for: 123 Main St
+Geocoding timeout for 123 Main St: Request timeout: Request timed out
+Failed to geocode 123 Main St: Geocoding failed after 2 attempts: Request timeout: Request timed out
+Geocoding attempt 1/4 for: 123 Main St, New York, NY
+Starting import of 5 church records
+✓ Created: New Testament Church of Atlanta
+✓ Created: New Testament Church of Dallas
+✓ Created: New Testament Church of Phoenix
+✓ Created: New Testament Church of Seattle
+✓ Created: New Testament Church of Miami
+Import completed: 5 created, 0 updated, 0 failed
+Starting import of 2 church records
+✓ Created: Valid Church
+Import completed: 1 created, 0 updated, 1 failed
+Starting import of 5 church records
+✓ Created: New Testament Church of Atlanta
+✓ Created: New Testament Church of Dallas
+✓ Created: New Testament Church of Phoenix
+✓ Created: New Testament Church of Seattle
+✓ Created: New Testament Church of Miami
+Import completed: 5 created, 0 updated, 0 failed
+Starting import of 2 church records
+✓ Created: Test Church 1
+✓ Created: Test Church 2
+Import completed: 2 created, 0 updated, 0 failed
+Starting import of 2 church records
+✓ Created: JSON Church 1
+✓ Created: JSON Church 2
+Import completed: 2 created, 0 updated, 0 failed
+Starting import of 5 church records
+✓ Created: New Testament Church of Atlanta
+✓ Created: New Testament Church of Dallas
+✓ Created: New Testament Church of Phoenix
+✓ Created: New Testament Church of Seattle
+✓ Created: New Testament Church of Miami
+Import completed: 5 created, 0 updated, 0 failed
+Starting import of 5 church records
+✓ Created: New Testament Church of Atlanta
+✓ Created: New Testament Church of Dallas
+✓ Created: New Testament Church of Phoenix
+✓ Created: New Testament Church of Seattle
+✓ Created: New Testament Church of Miami
+Import completed: 5 created, 0 updated, 0 failed
+Starting geocoding for 5 churches
+Processing church 1/5: New Testament Church of Phoenix
+Starting geocoding for 2 churches
+Processing church 1/2: Church 1
+✓ Church 1: Successfully geocoded to (40.7128, -74.006)
+Processing church 2/2: Church 3
+✗ Church 3: Geocoding failed: Address not found
+Geocoding completed: 1 successful, 1 failed, 0 skipped
+Starting geocoding for 1 churches
+Processing church 1/1: Test Church
+✓ Test Church: Successfully geocoded to (41.0, -75.0)
+Geocoding completed: 1 successful, 0 failed, 0 skipped
+Starting import of 3 church records
+✓ Created: Valid Church
+Import completed: 1 created, 0 updated, 2 failed
+Starting import of 2 church records
+✓ Created: Test Church 1
+✓ Created: Test Church 2
+Import completed: 2 created, 0 updated, 0 failed
+Starting import of 2 church records
+✓ Updated: Test Church 1
+✓ Created: Test Church 2
+Import completed: 1 created, 1 updated, 0 failed
+Geocoding batch progress: 1/3
+Geocoding attempt 1/4 for: 123 Main St
+Geocoding batch progress: 2/3
+Geocoding attempt 1/4 for: 456 Oak Ave
+Geocoding batch progress: 3/3
+Geocoding attempt 1/4 for: 789 Pine Rd
+Using cached geocoding result for: 123 Main St
+Geocoding attempt 1/4 for: 123 Main St
+Geocoding attempt 1/4 for: 123 Main St
+HTTP error geocoding 123 Main St: HTTP error unknown: 404 Not Found
+Failed to geocode 123 Main St: Geocoding failed after 4 attempts: HTTP error unknown: 404 Not Found
+Geocoding attempt 1/4 for: Invalid Address
+Geocoding attempt 1/4 for: Nonexistent Address
+Geocoding attempt 1/3 for: 123 Main St
+Rate limit hit for 123 Main St, attempt 1
+Geocoding attempt 2/3 for: 123 Main St
+Geocoding attempt 1/2 for: 123 Main St
+Geocoding timeout for 123 Main St: Request timeout: Request timed out
+Geocoding attempt 2/2 for: 123 Main St
+Geocoding timeout for 123 Main St: Request timeout: Request timed out
+Failed to geocode 123 Main St: Geocoding failed after 2 attempts: Request timeout: Request timed out
+Geocoding attempt 1/4 for: 123 Main St, New York, NY
+Starting import of 5 church records
+✓ Created: New Testament Church of Atlanta
+✓ Created: New Testament Church of Dallas
+✓ Created: New Testament Church of Phoenix
+✓ Created: New Testament Church of Seattle
+✓ Created: New Testament Church of Miami
+Import completed: 5 created, 0 updated, 0 failed
+Starting geocoding for 5 churches
+Processing church 1/5: New Testament Church of Phoenix
+✓ New Testament Church of Phoenix: Successfully geocoded to (40.7128, -74.006)
+Processing church 2/5: New Testament Church of Miami
+✓ New Testament Church of Miami: Successfully geocoded to (40.7128, -74.006)
+Processing church 3/5: New Testament Church of Atlanta
+✓ New Testament Church of Atlanta: Successfully geocoded to (40.7128, -74.006)
+Processing church 4/5: New Testament Church of Dallas
+✓ New Testament Church of Dallas: Successfully geocoded to (40.7128, -74.006)
+Processing church 5/5: New Testament Church of Seattle
+✓ New Testament Church of Seattle: Successfully geocoded to (40.7128, -74.006)
+Geocoding completed: 5 successful, 0 failed, 0 skipped
+Starting import of 2 church records
+✓ Created: Valid Church
+Import completed: 1 created, 0 updated, 1 failed
+Starting import of 5 church records
+✓ Created: New Testament Church of Atlanta
+✓ Created: New Testament Church of Dallas
+✓ Created: New Testament Church of Phoenix
+✓ Created: New Testament Church of Seattle
+✓ Created: New Testament Church of Miami
+Import completed: 5 created, 0 updated, 0 failed
+Starting import of 2 church records
+✓ Created: Test Church 1
+✓ Created: Test Church 2
+Import completed: 2 created, 0 updated, 0 failed
+Starting import of 2 church records
+✓ Created: JSON Church 1
+✓ Created: JSON Church 2
+Import completed: 2 created, 0 updated, 0 failed
+Starting import of 5 church records
+✓ Created: New Testament Church of Atlanta
+✓ Created: New Testament Church of Dallas
+✓ Created: New Testament Church of Phoenix
+✓ Created: New Testament Church of Seattle
+✓ Created: New Testament Church of Miami
+Import completed: 5 created, 0 updated, 0 failed
+Starting import of 5 church records
+✓ Created: New Testament Church of Atlanta
+✓ Created: New Testament Church of Dallas
+✓ Created: New Testament Church of Phoenix
+✓ Created: New Testament Church of Seattle
+✓ Created: New Testament Church of Miami
+Import completed: 5 created, 0 updated, 0 failed
+Starting geocoding for 5 churches
+Processing church 1/5: New Testament Church of Phoenix
+✓ New Testament Church of Phoenix: Successfully geocoded to (40.7128, -74.006)
+Processing church 2/5: New Testament Church of Miami
+✓ New Testament Church of Miami: Successfully geocoded to (40.7128, -74.006)
+Processing church 3/5: New Testament Church of Atlanta
+✓ New Testament Church of Atlanta: Successfully geocoded to (40.7128, -74.006)
+Processing church 4/5: New Testament Church of Dallas
+✓ New Testament Church of Dallas: Successfully geocoded to (40.7128, -74.006)
+Processing church 5/5: New Testament Church of Seattle
+✓ New Testament Church of Seattle: Successfully geocoded to (40.7128, -74.006)
+Geocoding completed: 5 successful, 0 failed, 0 skipped
+Starting geocoding for 2 churches
+Processing church 1/2: Church 1
+✓ Church 1: Successfully geocoded to (40.7128, -74.006)
+Processing church 2/2: Church 3
+✗ Church 3: Geocoding failed: Address not found
+Geocoding completed: 1 successful, 1 failed, 0 skipped
+Starting geocoding for 1 churches
+Processing church 1/1: Test Church
+✓ Test Church: Successfully geocoded to (41.0, -75.0)
+Geocoding completed: 1 successful, 0 failed, 0 skipped
+Starting import of 3 church records
+✓ Created: Valid Church
+Import completed: 1 created, 0 updated, 2 failed
+Starting import of 2 church records
+✓ Created: Test Church 1
+✓ Created: Test Church 2
+Import completed: 2 created, 0 updated, 0 failed
+Starting import of 2 church records
+✓ Updated: Test Church 1
+✓ Created: Test Church 2
+Import completed: 1 created, 1 updated, 0 failed
+Geocoding batch progress: 1/3
+Geocoding attempt 1/4 for: 123 Main St
+Geocoding batch progress: 2/3
+Geocoding attempt 1/4 for: 456 Oak Ave
+Geocoding batch progress: 3/3
+Geocoding attempt 1/4 for: 789 Pine Rd
+Using cached geocoding result for: 123 Main St
+Geocoding attempt 1/4 for: 123 Main St
+Geocoding attempt 1/4 for: 123 Main St
+HTTP error geocoding 123 Main St: HTTP error unknown: 404 Not Found
+Failed to geocode 123 Main St: Geocoding failed after 4 attempts: HTTP error unknown: 404 Not Found
+Geocoding attempt 1/4 for: Invalid Address
+Geocoding attempt 1/4 for: Nonexistent Address
+Geocoding attempt 1/3 for: 123 Main St
+Rate limit hit for 123 Main St, attempt 1
+Geocoding attempt 2/3 for: 123 Main St
+Geocoding attempt 1/2 for: 123 Main St
+Geocoding timeout for 123 Main St: Request timeout: Request timed out
+Geocoding attempt 2/2 for: 123 Main St
+Geocoding timeout for 123 Main St: Request timeout: Request timed out
+Failed to geocode 123 Main St: Geocoding failed after 2 attempts: Request timeout: Request timed out
+Geocoding attempt 1/4 for: 123 Main St, New York, NY
+Starting import of 5 church records
+✓ Created: New Testament Church of Atlanta
+✓ Created: New Testament Church of Dallas
+✓ Created: New Testament Church of Phoenix
+✓ Created: New Testament Church of Seattle
+✓ Created: New Testament Church of Miami
+Import completed: 5 created, 0 updated, 0 failed
+Starting geocoding for 5 churches
+Processing church 1/5: New Testament Church of Phoenix
+✓ New Testament Church of Phoenix: Successfully geocoded to (40.7128, -74.006)
+Processing church 2/5: New Testament Church of Miami
+✓ New Testament Church of Miami: Successfully geocoded to (40.7128, -74.006)
+Processing church 3/5: New Testament Church of Atlanta
+✓ New Testament Church of Atlanta: Successfully geocoded to (40.7128, -74.006)
+Processing church 4/5: New Testament Church of Dallas
+✓ New Testament Church of Dallas: Successfully geocoded to (40.7128, -74.006)
+Processing church 5/5: New Testament Church of Seattle
+✓ New Testament Church of Seattle: Successfully geocoded to (40.7128, -74.006)
+Geocoding completed: 5 successful, 0 failed, 0 skipped
+Starting import of 2 church records
+✓ Created: Valid Church
+Import completed: 1 created, 0 updated, 1 failed
+Starting import of 5 church records
+✓ Created: New Testament Church of Atlanta
+✓ Created: New Testament Church of Dallas
+✓ Created: New Testament Church of Phoenix
+✓ Created: New Testament Church of Seattle
+✓ Created: New Testament Church of Miami
+Import completed: 5 created, 0 updated, 0 failed
+Starting import of 2 church records
+✓ Created: Test Church 1
+✓ Created: Test Church 2
+Import completed: 2 created, 0 updated, 0 failed
+Starting import of 2 church records
+✓ Created: JSON Church 1
+✓ Created: JSON Church 2
+Import completed: 2 created, 0 updated, 0 failed
+Starting import of 5 church records
+✓ Created: New Testament Church of Atlanta
+✓ Created: New Testament Church of Dallas
+✓ Created: New Testament Church of Phoenix
+✓ Created: New Testament Church of Seattle
+✓ Created: New Testament Church of Miami
+Import completed: 5 created, 0 updated, 0 failed
+Starting import of 5 church records
+✓ Created: New Testament Church of Atlanta
+✓ Created: New Testament Church of Dallas
+✓ Created: New Testament Church of Phoenix
+✓ Created: New Testament Church of Seattle
+✓ Created: New Testament Church of Miami
+Import completed: 5 created, 0 updated, 0 failed
+Starting geocoding for 5 churches
+Processing church 1/5: New Testament Church of Phoenix
+✓ New Testament Church of Phoenix: Successfully geocoded to (40.7128, -74.006)
+Processing church 2/5: New Testament Church of Miami
+✓ New Testament Church of Miami: Successfully geocoded to (40.7128, -74.006)
+Processing church 3/5: New Testament Church of Atlanta
+✓ New Testament Church of Atlanta: Successfully geocoded to (40.7128, -74.006)
+Processing church 4/5: New Testament Church of Dallas
+✓ New Testament Church of Dallas: Successfully geocoded to (40.7128, -74.006)
+Processing church 5/5: New Testament Church of Seattle
+✓ New Testament Church of Seattle: Successfully geocoded to (40.7128, -74.006)
+Geocoding completed: 5 successful, 0 failed, 0 skipped
+Directions attempt 1/4
+Reverse geocoding attempt 1/4 for: 40.7128, -74.006
+Using cached reverse geocoding result for: 40.7128, -74.006
+Using cached reverse geocoding result for: 40.7128, -74.006
+Starting import of 13 church records
+✓ Created: Brimfield Church of Christ
+✓ Created: Southside Church of Christ
+✓ Created: Chesapeake Church of Christ
+✓ Created: Hamilton Church of Christ
+✓ Created: Goshen Church of Christ
+✓ Created: Sharonville Church of Christ
+✓ Created: Family Church of Christ
+✓ Created: Red Brush Church of Christ
+✓ Created: Proctorville Church of Christ
+Import completed: 9 created, 0 updated, 4 failed
+Starting geocoding for 9 churches
+Processing church 1/9: Southside Church of Christ
+Starting geocoding for 9 churches
+Processing church 1/9: Southside Church of Christ
+Starting geocoding for 9 churches
+Processing church 1/9: Southside Church of Christ
+Geocoding attempt 1/4 for: 317 Bourbon Street, Blanchester, OH, 45107
+✓ Southside Church of Christ: Successfully geocoded to (39.290955, -83.980252)
+Processing church 2/9: Brimfield Church of Christ
+Geocoding attempt 1/4 for: 1875 Tallmadge Road, Brimfield, OH, 44278
+✓ Brimfield Church of Christ: Successfully geocoded to (41.096659, -81.338737)
+Processing church 3/9: Chesapeake Church of Christ
+Geocoding attempt 1/4 for: 901 3rd Avenue, Chesapeake, OH
+✓ Chesapeake Church of Christ: Successfully geocoded to (38.427995, -82.455148)
+Processing church 4/9: Family Church of Christ
+Geocoding attempt 1/4 for: 1302 Leo St, http://www.newtestamentchurch.org/A/Family/index.html, Dayton, OH, 45404
+✓ Family Church of Christ: Successfully geocoded to (39.760973, -84.198938)
+Processing church 5/9: Goshen Church of Christ
+Geocoding attempt 1/4 for: 1869 Mulberry Street, http://www.goshenchurchofchrist.com, Goshen, OH, 45122
+✓ Goshen Church of Christ: Successfully geocoded to (39.232847, -84.153636)
+Processing church 6/9: Red Brush Church of Christ
+Geocoding attempt 1/4 for: Bashan Road, Long Bottom, OH, 45743
+✓ Red Brush Church of Christ: Successfully geocoded to (39.08619, -81.80374)
+Processing church 7/9: Proctorville Church of Christ
+Geocoding attempt 1/4 for: 505 State Street 45669, Proctorville, OH
+✓ Proctorville Church of Christ: Successfully geocoded to (38.43767, -82.381775)
+Processing church 8/9: Sharonville Church of Christ
+Geocoding attempt 1/4 for: 11560 Lippleman Road, Sharonville, OH
+✓ Sharonville Church of Christ: Successfully geocoded to (39.28064, -84.406385)
+Processing church 9/9: Hamilton Church of Christ
+Geocoding attempt 1/4 for: P.O. Box 683, West Chester, OH, 45069
+✓ Hamilton Church of Christ: Successfully geocoded to (40.899729, -73.412646)
+Geocoding completed: 9 successful, 0 failed, 0 skipped
+Starting geocoding for 6 churches
+Processing church 1/6: Chesapeake Church of Christ
+Geocoding attempt 1/4 for: 901 3rd Avenue, Chesapeake, OH, 45619
+✓ Chesapeake Church of Christ: Successfully geocoded to (38.427995, -82.455148)
+Processing church 2/6: Family Church of Christ
+Geocoding attempt 1/4 for: 1302 Leo St, Dayton, OH, 45404
+✓ Family Church of Christ: Successfully geocoded to (39.760973, -84.198938)
+Processing church 3/6: Goshen Church of Christ
+Geocoding attempt 1/4 for: 1869 Mulberry Street, Goshen, OH, 45122
+✓ Goshen Church of Christ: Successfully geocoded to (39.233296, -84.160721)
+Processing church 4/6: Proctorville Church of Christ
+Geocoding attempt 1/4 for: 505 State Street, Proctorville, OH, 45669
+✓ Proctorville Church of Christ: Successfully geocoded to (38.43767, -82.381775)
+Processing church 5/6: Sharonville Church of Christ
+Geocoding attempt 1/4 for: 11560 Lippleman Road, Sharonville, OH, 45241
+✓ Sharonville Church of Christ: Successfully geocoded to (39.28064, -84.406385)
+Processing church 6/6: Hamilton Church of Christ
+Geocoding attempt 1/4 for: 4844 Tylersville Rd, West Chester, OH, 45069
+✓ Hamilton Church of Christ: Successfully geocoded to (39.335144, -84.414789)
+Geocoding completed: 6 successful, 0 failed, 0 skipped
+Geocoding attempt 1/4 for: ohio
+Geocoding attempt 1/4 for: dayton
+Geocoding attempt 1/4 for: dayton ohio
+Geocoding attempt 1/4 for: Dayton, OH
+Geocoding attempt 1/4 for: new york
+Geocoding attempt 1/4 for: williamsburg
+Geocoding attempt 1/4 for: williamsburg, OH
+Using cached geocoding result for: dayton, OH
+Geocoding attempt 1/4 for: 13094 meeker rd
+Geocoding attempt 1/4 for: 13094 meeker rd williamsburg, OH
+Geocoding attempt 1/4 for: meeker rd williamsburg
+Geocoding attempt 1/4 for: meeker rd williamsburg, OH
+Using cached geocoding result for: 13094 meeker rd
+Using cached geocoding result for: 13094 meeker rd williamsburg, OH
+Using cached geocoding result for: williamsburg, OH
+Geocoding attempt 1/4 for: 13050 meeker rd
+Geocoding attempt 1/4 for: roark rd kentucky
+Geocoding attempt 1/4 for: roark road
+Geocoding attempt 1/4 for: 13094 meeker road
+Geocoding attempt 1/4 for: meeker road williamsburg
+Geocoding attempt 1/4 for: meeker road williamsburg, OH
+Using cached geocoding result for: meeker road williamsburg, OH
+Using cached geocoding result for: meeker road williamsburg, OH
+Geocoding attempt 1/4 for: meeker road, williamsburg, ohio
+Using cached geocoding result for: meeker road, williamsburg, ohio
+Using cached geocoding result for: meeker road, williamsburg, ohio
+Using cached geocoding result for: meeker road williamsburg

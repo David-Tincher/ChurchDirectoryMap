@@ -1,0 +1,81 @@
+[
+  {
+    "name": "First Baptist Church of Atlanta",
+    "street_address": "754 Peachtree St NE",
+    "city": "Atlanta",
+    "state": "GA",
+    "zip_code": "30308",
+    "phone": "(404) 873-1978",
+    "website": "https://fbcatlanta.org",
+    "service_times": "Sunday 11:00 AM, Wednesday 7:00 PM"
+  },
+  {
+    "name": "Hillsong Church NYC",
+    "street_address": "115 E 57th St",
+    "city": "New York",
+    "state": "NY",
+    "zip_code": "10022",
+    "phone": "(212) 586-7000",
+    "website": "https://hillsong.com/newyork",
+    "service_times": "Sunday 10:00 AM, 12:00 PM, 6:00 PM"
+  },
+  {
+    "name": "Saddleback Church",
+    "street_address": "1 Saddleback Pkwy",
+    "city": "Lake Forest",
+    "state": "CA",
+    "zip_code": "92630",
+    "phone": "(949) 609-8000",
+    "website": "https://saddleback.com",
+    "service_times": "Saturday 5:00 PM, Sunday 9:00 AM, 11:00 AM"
+  },
+  {
+    "name": "Lakewood Church",
+    "street_address": "3700 Southwest Fwy",
+    "city": "Houston",
+    "state": "TX",
+    "zip_code": "77027",
+    "phone": "(713) 491-9400",
+    "website": "https://lakewood.cc",
+    "service_times": "Saturday 7:00 PM, Sunday 8:30 AM, 11:00 AM"
+  },
+  {
+    "name": "Mars Hill Church",
+    "street_address": "1411 NW Flanders St",
+    "city": "Portland",
+    "state": "OR",
+    "zip_code": "97209",
+    "phone": "(503) 228-9720",
+    "service_times": "Sunday 9:00 AM, 11:00 AM, 6:00 PM"
+  },
+  {
+    "name": "Elevation Church",
+    "street_address": "3145 Klondike Rd",
+    "city": "Charlotte",
+    "state": "NC",
+    "zip_code": "28273",
+    "phone": "(704) 246-8600",
+    "website": "https://elevationchurch.org",
+    "service_times": "Saturday 6:00 PM, Sunday 9:00 AM, 11:00 AM"
+  },
+  {
+    "name": "Gateway Church",
+    "street_address": "2121 E Southlake Blvd",
+    "city": "Southlake",
+    "state": "TX",
+    "zip_code": "76092",
+    "phone": "(817) 481-5500",
+    "website": "https://gatewaypeople.com",
+    "service_times": "Saturday 6:00 PM, Sunday 8:30 AM, 10:00 AM, 11:30 AM"
+  },
+  {
+    "name": "North Point Community Church",
+    "street_address": "4350 North Point Pkwy",
+    "city": "Alpharetta",
+    "state": "GA",
+    "zip_code": "30022",
+    "phone": "(678) 892-5000",
+    "website": "https://northpoint.org",
+    "service_times": "Saturday 5:00 PM, Sunday 9:15 AM, 11:15 AM"
+  }
+]
