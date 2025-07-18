@@ -395,6 +395,92 @@
             loadChurchStats();
             loadChurchData();
             setupEventListeners();
+            
+            // Add debugging functions to window for console access
+            window.debugGeocode = async function(address = 'meeker road williamsburg ohio') {
+                console.log('=== DEBUGGING GEOCODING ===');
+                console.log('Testing address:', address);
+                
+                // Test 1: Backend geocoding
+                console.log('\n--- Testing Backend Geocoding ---');
+                try {
+                    const response = await fetch(ENDPOINTS.geocoding, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCsrfToken()
+                        },
+                        body: JSON.stringify({
+                            address: address,
+                            country: 'US'
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    console.log('Backend result:', result);
+                } catch (error) {
+                    console.log('Backend error:', error);
+                }
+                
+                // Test 2: Direct Nominatim
+                console.log('\n--- Testing Direct Nominatim ---');
+                try {
+                    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&countrycodes=us&limit=5&addressdetails=1`;
+                    console.log('Nominatim URL:', url);
+                    
+                    const response = await fetch(url);
+                    const results = await response.json();
+                    
+                    console.log(`Found ${results.length} results:`);
+                    results.forEach((result, idx) => {
+                        console.log(`${idx + 1}. ${result.display_name}`);
+                        console.log(`   Type: ${result.type}, Class: ${result.class}`);
+                        console.log(`   Coords: ${result.lat}, ${result.lon}`);
+                    });
+                } catch (error) {
+                    console.log('Nominatim error:', error);
+                }
+                
+                console.log('=== END DEBUGGING ===');
+            };
+            
+            window.testNominatim = async function(address = 'meeker road williamsburg ohio') {
+                console.log('=== TESTING NOMINATIM VARIATIONS ===');
+                
+                const variations = [
+                    address,
+                    'Meeker Road, Williamsburg, OH',
+                    'Meeker Rd, Williamsburg, Ohio',
+                    'Williamsburg, Clermont County, OH',
+                    'Meeker Road, Williamsburg, Clermont County, OH'
+                ];
+                
+                for (let i = 0; i < variations.length; i++) {
+                    const testAddr = variations[i];
+                    console.log(`\nTesting: "${testAddr}"`);
+                    
+                    try {
+                        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(testAddr)}&countrycodes=us&limit=3&addressdetails=1`;
+                        const response = await fetch(url);
+                        const results = await response.json();
+                        
+                        if (results.length > 0) {
+                            results.forEach((result, idx) => {
+                                console.log(`  ${idx + 1}. ${result.display_name}`);
+                                if (result.address && result.address.road) {
+                                    console.log(`     Road: ${result.address.road}`);
+                                }
+                            });
+                        } else {
+                            console.log('  No results found');
+                        }
+                    } catch (error) {
+                        console.log(`  Error: ${error}`);
+                    }
+                }
+                
+                console.log('=== END TESTING ===');
+            };
         });
 
         // Initialize the Leaflet map
@@ -1122,17 +1208,39 @@
                     
                     console.log(`Selected result: "${bestResult.result.formatted_address}" (specificity: ${bestResult.specificity})`);
                     
-                    // If the best result is still not specific enough, try Google Geocoding as fallback
+                    // If the best result is still not specific enough, try direct geocoding as fallback
                     if (bestResult.specificity < 30) {
-                        console.log('Result not specific enough, trying Google Geocoding fallback...');
+                        console.log('Result not specific enough, trying direct geocoding fallback...');
+                        showLoading('Trying alternative geocoding service...');
                         try {
-                            const googleResult = await tryGoogleGeocoding(address);
-                            if (googleResult && googleResult.specificity > bestResult.specificity) {
-                                console.log('Using Google result instead:', googleResult.result.formatted_address);
-                                bestResult = googleResult;
+                            const directResult = await tryDirectGeocoding(address);
+                            if (directResult && directResult.specificity > bestResult.specificity) {
+                                console.log('Using direct result instead:', directResult.result.formatted_address);
+                                bestResult = {
+                                    query: address,
+                                    result: directResult.result,
+                                    specificity: directResult.specificity,
+                                    source: 'direct'
+                                };
                             }
                         } catch (error) {
-                            console.log('Google geocoding fallback failed:', error);
+                            console.log('Direct geocoding fallback failed:', error);
+                        }
+                    }
+                    
+                    // Show user what we found if it's still not very specific
+                    if (bestResult.specificity < 20) {
+                        const userChoice = confirm(
+                            `We found "${bestResult.result.formatted_address}" but it might not be very specific.\n\n` +
+                            `Would you like to:\n` +
+                            `• Click "OK" to use this location anyway\n` +
+                            `• Click "Cancel" to try clicking on the map instead`
+                        );
+                        
+                        if (!userChoice) {
+                            hideLoading();
+                            enableMapClickMode();
+                            return;
                         }
                     }
                 } else {
@@ -1832,6 +1940,95 @@
             // Return original query if no improvements needed
             return query;
         }
+
+        // Simple direct geocoding test function - call this from browser console
+        async function testDirectGeocoding(address) {
+            console.log('=== TESTING DIRECT GEOCODING ===');
+            console.log('Original address:', address);
+            
+            // Try multiple variations of the address
+            const variations = [
+                address,
+                `${address}, USA`,
+                address.replace(/\s+/g, ' ').trim(),
+                improveSearchQuery(address),
+                'Meeker Road, Williamsburg, OH, USA',
+                'Meeker Rd, Williamsburg, Ohio',
+                'Williamsburg, Clermont County, OH, USA'
+            ];
+            
+            for (let i = 0; i < variations.length; i++) {
+                const testAddress = variations[i];
+                console.log(`\nTesting variation ${i + 1}: "${testAddress}"`);
+                
+                try {
+                    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(testAddress)}&countrycodes=us&limit=5&addressdetails=1`;
+                    console.log('Request URL:', url);
+                    
+                    const response = await fetch(url);
+                    const results = await response.json();
+                    
+                    console.log(`Found ${results.length} results:`);
+                    results.forEach((result, idx) => {
+                        console.log(`  ${idx + 1}. ${result.display_name}`);
+                        console.log(`     Type: ${result.type}, Class: ${result.class}`);
+                        console.log(`     Coords: ${result.lat}, ${result.lon}`);
+                        if (result.address) {
+                            console.log(`     Address components:`, result.address);
+                        }
+                    });
+                    
+                    if (results.length > 0) {
+                        return results;
+                    }
+                } catch (error) {
+                    console.log(`Error with variation ${i + 1}:`, error);
+                }
+            }
+            
+            console.log('=== END TESTING ===');
+            return null;
+        }
+
+        // Quick test function you can call from console
+        window.testGeocode = function(address = 'meeker road williamsburg ohio') {
+            testDirectGeocoding(address);
+        };
+
+        // Add a test button to the location dialog for debugging
+        window.debugGeocoding = async function() {
+            console.log('=== DEBUGGING GEOCODING ISSUE ===');
+            
+            const testAddress = 'meeker road williamsburg ohio';
+            console.log('Testing address:', testAddress);
+            
+            // Test backend geocoding
+            console.log('\n--- Testing Backend Geocoding ---');
+            try {
+                const response = await fetch(ENDPOINTS.geocoding, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCsrfToken()
+                    },
+                    body: JSON.stringify({
+                        address: testAddress,
+                        country: 'US'
+                    })
+                });
+                
+                const result = await response.json();
+                console.log('Backend result:', result);
+            } catch (error) {
+                console.log('Backend error:', error);
+            }
+            
+            // Test direct geocoding
+            console.log('\n--- Testing Direct Geocoding ---');
+            await testDirectGeocoding(testAddress);
+            
+            console.log('=== END DEBUGGING ===');
+        };
 
         // Calculate address specificity score to choose best geocoding result
         function calculateAddressSpecificity(formattedAddress) {
