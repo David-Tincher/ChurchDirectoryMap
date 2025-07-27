@@ -216,21 +216,30 @@
             
             .search-panel {
                 width: 100%;
-                height: 200px;
+                height: auto;
+                max-height: 50vh;
                 border-right: none;
                 border-bottom: 1px solid #e0e0e0;
+                display: flex;
+                flex-direction: column;
             }
             
             .search-container {
                 padding: 1rem;
+                flex-shrink: 0;
             }
             
             .results-container {
-                display: none; /* Hide on mobile to save space */
+                display: block;
+                flex: 1;
+                overflow-y: auto;
+                max-height: 30vh;
+                min-height: 100px;
             }
             
             .stats-container {
                 padding: 0.75rem 1rem;
+                flex-shrink: 0;
             }
             
             .map-container {
@@ -253,11 +262,17 @@
             }
             
             .search-panel {
-                height: 150px;
+                height: auto;
+                max-height: 45vh;
             }
             
             .search-container {
                 padding: 0.75rem;
+            }
+            
+            .results-container {
+                max-height: 25vh;
+                min-height: 80px;
             }
             
             .search-input {
@@ -269,6 +284,47 @@
                 padding: 0.6rem;
                 font-size: 0.9rem;
                 margin-top: 0.5rem;
+            }
+        }
+
+        /* Mobile Search Results Styling */
+        @media (max-width: 768px) {
+            .result-item {
+                padding: 0.75rem;
+                border-bottom: 1px solid #eee;
+                cursor: pointer;
+                transition: background-color 0.2s ease;
+                min-height: 44px; /* Touch-friendly minimum height - meets iOS/Android guidelines */
+            }
+            
+            .result-item:hover,
+            .result-item:active {
+                background-color: #f8f9fa;
+            }
+            
+            .result-item:last-child {
+                border-bottom: none;
+            }
+            
+            .result-distance {
+                font-size: 0.8rem;
+                color: #667eea;
+                font-weight: 600;
+                margin-bottom: 0.25rem;
+            }
+            
+            .result-name {
+                font-weight: 600;
+                color: #333;
+                margin-bottom: 0.25rem;
+                font-size: 0.95rem;
+                line-height: 1.3;
+            }
+            
+            .result-address {
+                font-size: 0.85rem;
+                color: #666;
+                line-height: 1.3;
             }
         }
 
@@ -326,14 +382,6 @@
                 <div class="stats-item">
                     <span class="stats-label">Total Churches:</span>
                     <span class="stats-value" id="totalChurches">Loading...</span>
-                </div>
-                <div class="stats-item">
-                    <span class="stats-label">With Coordinates:</span>
-                    <span class="stats-value" id="churchesWithCoords">Loading...</span>
-                </div>
-                <div class="stats-item">
-                    <span class="stats-label">Geocoding Rate:</span>
-                    <span class="stats-value" id="geocodingRate">Loading...</span>
                 </div>
             </div>
 
@@ -657,8 +705,6 @@
                 
                 // Update stats display
                 document.getElementById('totalChurches').textContent = stats.total_churches || 0;
-                document.getElementById('churchesWithCoords').textContent = stats.churches_with_coordinates || 0;
-                document.getElementById('geocodingRate').textContent = `${stats.geocoding_percentage || 0}%`;
                 
                 console.log('Church statistics loaded:', stats);
             } catch (error) {
