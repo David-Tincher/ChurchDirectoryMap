@@ -12,8 +12,8 @@ bind = f"0.0.0.0:{port}"
 backlog = 2048
 
 # Worker processes
-# Railway provides good resources, use appropriate worker count
-workers = multiprocessing.cpu_count() * 2 + 1
+# Railway deployment - use conservative worker count to prevent resource exhaustion
+workers = 2
 worker_class = "sync"
 worker_connections = 1000
 timeout = 30
