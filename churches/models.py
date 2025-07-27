@@ -5,16 +5,27 @@ from django.conf import settings
 import math
 
 # Check if PostGIS is available and database supports it
+HAS_POSTGIS = False
+gis_models = None
+Point = None
+Distance = None
+
 try:
-    from django.contrib.gis.db import models as gis_models
-    from django.contrib.gis.geos import Point
-    from django.contrib.gis.measure import Distance
-    from django.conf import settings
-    
-    # Check if we're using a GIS-enabled database backend
-    db_engine = settings.DATABASES['default']['ENGINE']
-    HAS_POSTGIS = 'gis' in db_engine or 'postgis' in db_engine
-except (ImportError, KeyError):
+    import os
+    # Skip GIS imports entirely on Railway (no GDAL library available)
+    if os.environ.get('RAILWAY_ENVIRONMENT') or os.environ.get('RAILWAY_PROJECT_ID'):
+        # Railway deployment - skip GIS imports
+        HAS_POSTGIS = False
+    else:
+        # Local development - try importing GIS components
+        from django.contrib.gis.db import models as gis_models
+        from django.contrib.gis.geos import Point
+        from django.contrib.gis.measure import Distance
+        
+        # Check if we're using a GIS-enabled database backend
+        db_engine = settings.DATABASES['default']['ENGINE']
+        HAS_POSTGIS = 'gis' in db_engine or 'postgis' in db_engine
+except (ImportError, KeyError, Exception):
     HAS_POSTGIS = False
 
 
