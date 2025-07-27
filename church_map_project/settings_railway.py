@@ -42,8 +42,14 @@ else:
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Add WhiteNoise middleware for static files
-MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+# Remove STATICFILES_DIRS to avoid the warning about non-existent static directory
+# Railway will collect static files from apps automatically
+if 'STATICFILES_DIRS' in locals():
+    del STATICFILES_DIRS
+
+# Add WhiteNoise middleware for static files (if not already present)
+if 'whitenoise.middleware.WhiteNoiseMiddleware' not in MIDDLEWARE:
+    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
 # WhiteNoise configuration
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

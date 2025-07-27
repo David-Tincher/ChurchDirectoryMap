@@ -1,1 +1,1 @@
-web: DJANGO_SETTINGS_MODULE=church_map_project.settings_railway gunicorn church_map_project.wsgi --log-file -
+web: DJANGO_SETTINGS_MODULE=church_map_project.settings_railway gunicorn church_map_project.wsgi --config gunicorn.conf.py

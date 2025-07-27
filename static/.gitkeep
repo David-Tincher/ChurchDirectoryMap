@@ -1,0 +1,2 @@
+# This file ensures the static directory is included in git and deployment
+# Static files from Django apps will be collected here during deployment
