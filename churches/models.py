@@ -4,29 +4,8 @@ from django.core.exceptions import ValidationError
 from django.conf import settings
 import math
 
-# Check if PostGIS is available and database supports it
+# No PostGIS/GIS support - using simple latitude/longitude fields
 HAS_POSTGIS = False
-gis_models = None
-Point = None
-Distance = None
-
-try:
-    import os
-    # Skip GIS imports entirely on Railway (no GDAL library available)
-    if os.environ.get('RAILWAY_ENVIRONMENT') or os.environ.get('RAILWAY_PROJECT_ID'):
-        # Railway deployment - skip GIS imports
-        HAS_POSTGIS = False
-    else:
-        # Local development - try importing GIS components
-        from django.contrib.gis.db import models as gis_models
-        from django.contrib.gis.geos import Point
-        from django.contrib.gis.measure import Distance
-        
-        # Check if we're using a GIS-enabled database backend
-        db_engine = settings.DATABASES['default']['ENGINE']
-        HAS_POSTGIS = 'gis' in db_engine or 'postgis' in db_engine
-except (ImportError, KeyError, Exception):
-    HAS_POSTGIS = False
 
 
 class Church(models.Model):
@@ -84,13 +63,7 @@ class Church(models.Model):
         help_text="Longitude coordinate (-180 to 180)"
     )
     
-    # PostGIS point field (only used if PostGIS is available)
-    if HAS_POSTGIS:
-        location = gis_models.PointField(
-            null=True,
-            blank=True,
-            help_text="Geographic location point (PostGIS)"
-        )
+    # PostGIS not supported - using latitude/longitude fields instead
     
     # Contact information
     phone = models.CharField(
@@ -187,12 +160,8 @@ class Church(models.Model):
     
     def save(self, *args, **kwargs):
         """
-        Override save method to sync PostGIS location with lat/lng coordinates.
+        Override save method with validation.
         """
-        # Sync PostGIS location field with latitude/longitude if PostGIS is available
-        if HAS_POSTGIS and self.latitude is not None and self.longitude is not None:
-            self.location = Point(float(self.longitude), float(self.latitude))
-        
         # Call clean method before saving
         self.full_clean()
         
@@ -238,13 +207,7 @@ class Church(models.Model):
         if not self.has_coordinates or not other_church.has_coordinates:
             return None
         
-        # Use PostGIS distance calculation if available
-        if HAS_POSTGIS and self.location and other_church.location:
-            distance = self.location.distance(other_church.location)
-            # Convert to kilometers (PostGIS returns distance in degrees by default)
-            return distance * 111.32  # Approximate km per degree
-        
-        # Fallback to Haversine formula for non-PostGIS setup
+        # Use Haversine formula for distance calculation
         return self._haversine_distance(
             self.latitude, self.longitude,
             other_church.latitude, other_church.longitude
@@ -265,14 +228,7 @@ class Church(models.Model):
         if not self.has_coordinates:
             return None
         
-        # Use PostGIS distance calculation if available
-        if HAS_POSTGIS and self.location:
-            target_point = Point(float(longitude), float(latitude))
-            distance = self.location.distance(target_point)
-            # Convert to kilometers
-            return distance * 111.32
-        
-        # Fallback to Haversine formula
+        # Use Haversine formula for distance calculation
         return self._haversine_distance(
             self.latitude, self.longitude,
             latitude, longitude
