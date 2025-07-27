@@ -1,0 +1,1 @@
+web: gunicorn church_map_project.wsgi --log-file -
