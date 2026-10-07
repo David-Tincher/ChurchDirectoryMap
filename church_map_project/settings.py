@@ -213,3 +213,6 @@ if os.path.exists(BASE_DIR / 'logs'):
         'filename': BASE_DIR / 'logs' / 'django.log',
     }
     LOGGING['loggers']['churches.services']['handlers'].append('file')
+
+# CARTO Basemaps API Key
+CARTO_API_KEY = os.getenv('CARTO_API_KEY', '')

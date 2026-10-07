@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.conf import settings
 from django.http import HttpResponse
 from rest_framework import generics, status
 from rest_framework.decorators import api_view, throttle_classes
@@ -23,7 +24,10 @@ def index(request):
     Main map page view.
     Renders the interactive church map interface.
     """
-    return render(request, 'churches/index.html')
+    context = {
+        'CARTO_API_KEY': settings.CARTO_API_KEY,
+    }
+    return render(request, 'churches/index.html', context)
 
 
 class ChurchListAPIView(generics.ListAPIView):
